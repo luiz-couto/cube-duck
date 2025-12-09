@@ -23,16 +23,19 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
     Camera camera;
 
     Cube* cube = Cube::createGrassCube(shaderManager, &core);
-    // AnimationInstance animatedInstance;
-    // duck.init(&core, &vsCBAnimatedModel);
+    GEMAnimatedObject duck(shaderManager, "models/Duck-white.gem");
+    
+    AnimationInstance animatedInstance;
+    VertexShaderCBAnimatedModel vsCBAnimatedModel;
+    duck.init(&core, &vsCBAnimatedModel);
 
     //Cube cube(shaderManager, &GrassCubePixelShader);
     
     // VertexShaderCBAnimatedModel vsCBAnimatedModel;
 
 
-    //animatedInstance.init(&duck.animatedModel->animation, 0);
-    //memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
+    animatedInstance.init(&duck.animatedModel->animation, 0);
+    memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
     
     //cube.scale(0.01f);
     //acacia.init(&core, &vsCBStaticModel);
@@ -74,17 +77,14 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
         cube->translate(Vec3(1.0f, 2.0f, 1.0f));
         cube->draw(&core, &camera);
 
-        // animatedInstance.update("idle variation", dt);
-        // //animatedInstance.animationFinished();
-		// if (animatedInstance.animationFinished() == true)
-		// {
-		// 	animatedInstance.resetAnimationTime();
-		// }
-        // memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
-        // duck.draw(&core, &vsCBAnimatedModel); 
+        animatedInstance.update("idle variation", dt);
+		if (animatedInstance.animationFinished() == true)
+		{
+			animatedInstance.resetAnimationTime();
+		}
 
-        // vsCBStaticModel.W.setTranslation(0, 0, 0);
-
+        duck.scale(0.15f);
+        duck.draw(&core, &camera, &animatedInstance);
 
         core.finishFrame();
     }

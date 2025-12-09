@@ -10,14 +10,22 @@
 class GEMAnimatedObject {
 public:
     AnimatedModel* animatedModel;
-    AnimationInstance* animationInstance;
     ShaderManager* shaderManager;
     PSOManager psos;
     std::string filename;
+    VertexShaderCBAnimatedModel* vertexShaderCB;
 
     GEMAnimatedObject(ShaderManager* sm, const std::string& filename) : shaderManager(sm), filename(filename) {}
 
-    void init(Core* core, VertexShaderCBAnimatedModel* vsCB) {
+    void init(Core* core, VertexShaderCBAnimatedModel* vsCB = nullptr) {
+        if (vsCB == nullptr) {
+            vsCB = new VertexShaderCBAnimatedModel();
+            vsCB->W.setIdentity();
+            vsCB->VP.setIdentity();
+        }
+
+        vertexShaderCB = vsCB;
+
         // Build geometry
         animatedModel = new AnimatedModel(core);
         animatedModel->load(filename);
@@ -28,19 +36,40 @@ public:
         psos.createPSO(core, filename, vertexShaderBlob->shaderBlob, pixelShaderBlob->shaderBlob, AnimatedVertexLayoutCache::getAnimatedLayout());
     }
 
-    void draw(Core* core, VertexShaderCBAnimatedModel* vsCB) {
+    void updateFromCamera(Core* core, Camera* camera) {
+        Matrix viewMatrix;
+        viewMatrix.setLookatMatrix(camera->from, camera->to, camera->up);
+
+        Matrix projectionMatrix;
+        projectionMatrix.setProjectionMatrix(ZFAR, ZNEAR, FOV, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        vertexShaderCB->VP = projectionMatrix.mul(viewMatrix);
+    }
+
+    void updateBones(AnimationInstance* animationInstance) {
+        memcpy(vertexShaderCB->bones, animationInstance->matrices, sizeof(vertexShaderCB->bones));
+    }
+
+    void scale(float s) {
+        vertexShaderCB->W = vertexShaderCB->W.setScaling(Vec3(s, s, s));
+    }
+
+    void draw(Core* core, Camera* camera, AnimationInstance* animationInstance) {
         core->beginRenderPass();
 
         // 1. Bind PSO FIRST
         psos.bind(core, filename);
 
+        updateFromCamera(core, camera);
+        updateBones(animationInstance);
+
         // 2. Update constant buffer values
-        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "W", &vsCB->W);
-        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "VP", &vsCB->VP);
-        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "bones", vsCB->bones);
+        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "W", &vertexShaderCB->W);
+        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "VP", &vertexShaderCB->VP);
+        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "bones", vertexShaderCB->bones);
 
         // 3. Apply vertex shader (binds CBV)
-        shaderManager->getVertexShader("shaders/vertex/AnimatedVertexShader.hlsl", vsCB)->apply(core);
+        shaderManager->getVertexShader("shaders/vertex/AnimatedVertexShader.hlsl", vertexShaderCB)->apply(core);
 
         // 4. Draw
         animatedModel->draw(shaderManager);
