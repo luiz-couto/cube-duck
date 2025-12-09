@@ -7,21 +7,10 @@
 #include "Mesh.h"
 #include "GEMObject.h"
 #include "GEMAnimatedObject.h"
-
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
+#include "Cube.h"
+#include "Camera.h"
 
 // Create Pipeline Manager to access many strcuts
-
-class Camera {
-    public:
-    Vec3 from;
-    Vec3 to;
-    Vec3 up;
-
-    Camera() : from(25.0f, 55.0f, 80.0f), to(0, 1, 0), up(0, 1, 0) {}
-    Camera(Vec3 from, Vec3 to, Vec3 up) : from(from), to(to), up(up) {}
-};
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow) {
     Window win;
@@ -32,37 +21,21 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
     
     ShaderManager* shaderManager = new ShaderManager(&core);
     Camera camera;
+
+    // GEMAnimatedObject duck(shaderManager, "models/Duck-white.gem");
+    // AnimationInstance animatedInstance;
+    // duck.init(&core, &vsCBAnimatedModel);
+
+    Cube cube(shaderManager, &GrassCubePixelShader);
+    cube.init(&core);
     
-    Matrix viewMatrix;
-    viewMatrix.setLookatMatrix(camera.from, camera.to, camera.up);
+    // VertexShaderCBAnimatedModel vsCBAnimatedModel;
 
-    Matrix projectionMatrix;
-    float zFar = 1000.0f;
-    float zNear = 0.01f;
-    float FOV = 60.0f;
-    projectionMatrix.setProjectionMatrix(zFar, zNear, FOV, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    //animatedInstance.init(&duck.animatedModel->animation, 0);
+    //memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
     
-    Matrix WorldMatrix;
-    WorldMatrix.setIdentity();
-
-    GEMAnimatedObject duck(shaderManager, "models/Duck-white.gem");
-
-    VertexShaderCBStaticModel vsCBStaticModel;
-    VertexShaderCBAnimatedModel vsCBAnimatedModel;
-
-    vsCBStaticModel.W = WorldMatrix;
-    vsCBStaticModel.VP = (projectionMatrix.mul(viewMatrix));
-
-    vsCBAnimatedModel.W = WorldMatrix;
-    vsCBAnimatedModel.VP = (projectionMatrix.mul(viewMatrix));
-
-    AnimationInstance animatedInstance;
-    duck.init(&core, &vsCBAnimatedModel);
-
-    animatedInstance.init(&duck.animatedModel->animation, 0);
-    memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
-    
-    //cube.init(&core, &vsCBStaticModel);
+    cube.scale(2.0f);
     //acacia.init(&core, &vsCBStaticModel);
     //sphere.init(&core, &vsCBStaticModel);
 
@@ -80,28 +53,25 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
         time += dt;
         time = fmodf(time, 2 * 3.1415f); // Avoid precision issues
 
-        Vec3 from = Vec3(11 * cos(time), 5, 11 * sinf(time));
-        camera.from = from;
-        viewMatrix.setLookatMatrix(camera.from, camera.to, camera.up);
+        //Vec3 from = Vec3(11 * cos(time), 5, 11 * sinf(time));
+        //camera.from = from;
 
-        vsCBStaticModel.VP = (projectionMatrix.mul(viewMatrix));
-        vsCBAnimatedModel.VP = (projectionMatrix.mul(viewMatrix));
+        //vsCBAnimatedModel.VP = (projectionMatrix.mul(viewMatrix));
         // acacia.draw(&core, &vsCBStaticModel);
 
         //cube.draw(&core, &vsCBStaticModel);
 
-        vsCBStaticModel.W.setScaling(2.0f, 2.0f, 2.0f);
-        vsCBAnimatedModel.W.setScaling(0.05f, 0.05f, 0.05f);
-        // cube.draw(&core, &vsCBStaticModel);
+        //vsCBAnimatedModel.W.setScaling(0.05f, 0.05f, 0.05f);
+        cube.draw(&core, &camera);
 
-        animatedInstance.update("idle variation", dt);
-        //animatedInstance.animationFinished();
-		if (animatedInstance.animationFinished() == true)
-		{
-			animatedInstance.resetAnimationTime();
-		}
-        memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
-        duck.draw(&core, &vsCBAnimatedModel); 
+        // animatedInstance.update("idle variation", dt);
+        // //animatedInstance.animationFinished();
+		// if (animatedInstance.animationFinished() == true)
+		// {
+		// 	animatedInstance.resetAnimationTime();
+		// }
+        // memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
+        // duck.draw(&core, &vsCBAnimatedModel); 
 
         // vsCBStaticModel.W.setTranslation(0, 0, 0);
 

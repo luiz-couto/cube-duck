@@ -16,7 +16,7 @@ public:
 
     GEMObject(ShaderManager* sm, Core* core, const std::string& filename) : shaderManager(sm), staticMesh(core), filename(filename) {}
 
-    void init(Core* core, VertexShaderCBStaticModel* vsCB) {
+    void init(Core* core, VertexDefaultShaderCB* vsCB) {
         // Build geometry
         staticMesh.load(filename);
 
@@ -25,7 +25,7 @@ public:
         psos.createPSO(core, filename, vertexShaderBlob->shaderBlob, pixelShaderBlob->shaderBlob, vertexLayoutCache.getStaticLayout());
     }
 
-    void draw(Core* core, VertexShaderCBStaticModel* vsCB) {
+    void draw(Core* core, VertexDefaultShaderCB* vsCB) {
         core->beginRenderPass();
 
         // 1. Bind PSO FIRST

@@ -17,7 +17,7 @@ struct PRIM_VERTEX {
     Colour colour;
 };
 
-struct VertexShaderCBStaticModel {
+struct VertexDefaultShaderCB {
     Matrix W;
     Matrix VP;
 };

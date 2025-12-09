@@ -20,20 +20,16 @@ float4 PS(PS_INPUT input) : SV_Target0
     // height for coloring
     float height = input.WorldPos.y;
 
-    // customizable colors
-    float3 grassColor = float3(0.2, 1.0, 0.2);
-    float3 dirtColor  = float3(0.45, 0.2, 0.05);
-
     // top region detection
-    bool topStrip = height > 0.9f;
+    bool topStrip = height > HeightThreshold;
 
-    float3 baseColor = topStrip ? grassColor : dirtColor;
+    float3 baseColor = topStrip ? TopColor : BottomColor;
 
     // lighting
-    float3 lightDir = normalize(float3(0.4, 1.0, 0.3));
+    float3 lightDir = normalize(LightDirection);
     float light = saturate(dot(normal, lightDir));
 
-    float3 finalColor = baseColor * (0.3 + 0.7 * light);
+    float3 finalColor = baseColor * (0.3 + LightStrength * light);
 
     return float4(finalColor, 1.0);
-}
+};
