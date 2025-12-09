@@ -22,11 +22,11 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
     ShaderManager* shaderManager = new ShaderManager(&core);
     Camera camera;
 
-    // GEMAnimatedObject duck(shaderManager, "models/Duck-white.gem");
+    GEMObject cube(shaderManager, &core, "models/cube.gem");
     // AnimationInstance animatedInstance;
     // duck.init(&core, &vsCBAnimatedModel);
 
-    Cube cube(shaderManager, &GrassCubePixelShader);
+    //Cube cube(shaderManager, &GrassCubePixelShader);
     cube.init(&core);
     
     // VertexShaderCBAnimatedModel vsCBAnimatedModel;
@@ -35,7 +35,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
     //animatedInstance.init(&duck.animatedModel->animation, 0);
     //memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
     
-    cube.scale(2.0f);
+    //cube.scale(0.01f);
     //acacia.init(&core, &vsCBStaticModel);
     //sphere.init(&core, &vsCBStaticModel);
 
@@ -53,8 +53,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
         time += dt;
         time = fmodf(time, 2 * 3.1415f); // Avoid precision issues
 
-        //Vec3 from = Vec3(11 * cos(time), 5, 11 * sinf(time));
-        //camera.from = from;
+        Vec3 from = Vec3(11 * cos(time), 5, 11 * sinf(time));
+        camera.from = from;
 
         //vsCBAnimatedModel.VP = (projectionMatrix.mul(viewMatrix));
         // acacia.draw(&core, &vsCBStaticModel);
