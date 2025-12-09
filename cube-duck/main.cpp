@@ -7,7 +7,6 @@
 #include "Mesh.h"
 #include "GEMObject.h"
 #include "GEMAnimatedObject.h"
-#include "Cube.h"
 #include "Camera.h"
 
 // Create Pipeline Manager to access many strcuts
@@ -54,14 +53,22 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
         time = fmodf(time, 2 * 3.1415f); // Avoid precision issues
 
         Vec3 from = Vec3(11 * cos(time), 5, 11 * sinf(time));
-        camera.from = from;
+        //camera.from = from;
 
-        //vsCBAnimatedModel.VP = (projectionMatrix.mul(viewMatrix));
-        // acacia.draw(&core, &vsCBStaticModel);
+        core.beginRenderPass();
 
-        //cube.draw(&core, &vsCBStaticModel);
+        // Draw first cube at origin
+        cube.translate(Vec3(0.0f, 0.0f, 0.0f));
+        cube.draw(&core, &camera);
 
-        //vsCBAnimatedModel.W.setScaling(0.05f, 0.05f, 0.05f);
+        // Draw second cube at offset position
+        cube.translate(Vec3(2.0f, 0.0f, 0.0f));
+        cube.draw(&core, &camera);
+
+        cube.translate(Vec3(0.0f, 0.0f, 2.0f));
+        cube.draw(&core, &camera);
+
+        cube.translate(Vec3(2.0f, 0.0f, 2.0f));
         cube.draw(&core, &camera);
 
         // animatedInstance.update("idle variation", dt);

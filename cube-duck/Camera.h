@@ -15,6 +15,6 @@ class Camera {
     Vec3 to;
     Vec3 up;
 
-    Camera() : from(11.0f, 5.0f, 11.0f), to(0, 1, 0), up(0, 1, 0) {}
+    Camera() : from(8.0f, 6.5f, 8.0f), to(0, 1, 0), up(0, 1, 0) {}
     Camera(Vec3 from, Vec3 to, Vec3 up) : from(from), to(to), up(up) {}
 };

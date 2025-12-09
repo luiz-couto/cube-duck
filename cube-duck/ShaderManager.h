@@ -145,7 +145,7 @@ public:
     }
 
     template <typename T>
-    void updateConstantVS(std::string shaderFilename, std::string varName, T* data) {
+    void updateConstant(std::string shaderFilename, std::string varName, T* data) {
         auto it = shaders.find(shaderFilename);
         if (it == shaders.end()) {
             MessageBoxA(NULL, ("Shader not found: " + shaderFilename).c_str(), "Error", MB_OK | MB_ICONERROR);

@@ -35,9 +35,9 @@ public:
         psos.bind(core, filename);
 
         // 2. Update constant buffer values
-        shaderManager->updateConstantVS("shaders/vertex/AnimatedVertexShader.hlsl", "W", &vsCB->W);
-        shaderManager->updateConstantVS("shaders/vertex/AnimatedVertexShader.hlsl", "VP", &vsCB->VP);
-        shaderManager->updateConstantVS("shaders/vertex/AnimatedVertexShader.hlsl", "bones", vsCB->bones);
+        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "W", &vsCB->W);
+        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "VP", &vsCB->VP);
+        shaderManager->updateConstant("shaders/vertex/AnimatedVertexShader.hlsl", "bones", vsCB->bones);
 
         // 3. Apply vertex shader (binds CBV)
         shaderManager->getVertexShader("shaders/vertex/AnimatedVertexShader.hlsl", vsCB)->apply(core);
