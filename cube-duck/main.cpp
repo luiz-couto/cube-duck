@@ -8,6 +8,7 @@
 #include "GEMObject.h"
 #include "GEMAnimatedObject.h"
 #include "Camera.h"
+#include "Cube.h"
 
 // Create Pipeline Manager to access many strcuts
 
@@ -21,12 +22,11 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
     ShaderManager* shaderManager = new ShaderManager(&core);
     Camera camera;
 
-    GEMObject cube(shaderManager, &core, "models/cube.gem");
+    Cube* cube = Cube::createIceCube(shaderManager, &core);
     // AnimationInstance animatedInstance;
     // duck.init(&core, &vsCBAnimatedModel);
 
     //Cube cube(shaderManager, &GrassCubePixelShader);
-    cube.init(&core);
     
     // VertexShaderCBAnimatedModel vsCBAnimatedModel;
 
@@ -58,18 +58,18 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
         core.beginRenderPass();
 
         // Draw first cube at origin
-        cube.translate(Vec3(0.0f, 0.0f, 0.0f));
-        cube.draw(&core, &camera);
+        cube->translate(Vec3(0.0f, 0.0f, 0.0f));
+        cube->draw(&core, &camera);
 
         // Draw second cube at offset position
-        cube.translate(Vec3(2.0f, 0.0f, 0.0f));
-        cube.draw(&core, &camera);
+        cube->translate(Vec3(2.0f, 0.0f, 0.0f));
+        cube->draw(&core, &camera);
 
-        cube.translate(Vec3(0.0f, 0.0f, 2.0f));
-        cube.draw(&core, &camera);
+        cube->translate(Vec3(0.0f, 0.0f, 2.0f));
+        cube->draw(&core, &camera);
 
-        cube.translate(Vec3(2.0f, 0.0f, 2.0f));
-        cube.draw(&core, &camera);
+        cube->translate(Vec3(2.0f, 0.0f, 2.0f));
+        cube->draw(&core, &camera);
 
         // animatedInstance.update("idle variation", dt);
         // //animatedInstance.animationFinished();
