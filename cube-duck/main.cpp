@@ -22,7 +22,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
     ShaderManager* shaderManager = new ShaderManager(&core);
     Camera camera;
 
-    Cube* cube = Cube::createIceCube(shaderManager, &core);
+    Cube* cube = Cube::createGrassCube(shaderManager, &core);
     // AnimationInstance animatedInstance;
     // duck.init(&core, &vsCBAnimatedModel);
 
