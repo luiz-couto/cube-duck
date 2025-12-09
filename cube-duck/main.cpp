@@ -71,6 +71,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
         cube->translate(Vec3(2.0f, 0.0f, 2.0f));
         cube->draw(&core, &camera);
 
+        cube->translate(Vec3(1.0f, 2.0f, 1.0f));
+        cube->draw(&core, &camera);
+
         // animatedInstance.update("idle variation", dt);
         // //animatedInstance.animationFinished();
 		// if (animatedInstance.animationFinished() == true)
