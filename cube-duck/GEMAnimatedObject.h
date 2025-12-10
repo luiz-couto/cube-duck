@@ -51,7 +51,11 @@ public:
     }
 
     void scale(float s) {
-        vertexShaderCB->W = vertexShaderCB->W.setScaling(Vec3(s, s, s));
+        vertexShaderCB->W.setScaling(s, s, s);
+    }
+
+    void translate(const Vec3& t) {
+        vertexShaderCB->W.setTranslation(t.x, t.y, t.z);
     }
 
     void draw(Core* core, Camera* camera, AnimationInstance* animationInstance) {

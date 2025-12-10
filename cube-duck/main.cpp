@@ -83,7 +83,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
 			animatedInstance.resetAnimationTime();
 		}
 
-        duck.scale(0.15f);
+        duck.scale(0.02f);
+        duck.translate(Vec3(1.0f, 4.0f, 1.0f));
         duck.draw(&core, &camera, &animatedInstance);
 
         core.finishFrame();

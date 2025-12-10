@@ -433,7 +433,6 @@ public:
     }
 
     void setTranslation(float tx, float ty, float tz) {
-        setIdentity();
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
@@ -448,7 +447,6 @@ public:
     }
 
     void setScaling(float sx, float sy, float sz) {
-        setIdentity();
         m[0] = sx;
         m[5] = sy;
         m[10] = sz;
