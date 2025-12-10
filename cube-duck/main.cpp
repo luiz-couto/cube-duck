@@ -51,12 +51,28 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
             break;
         }
 
+        float mouseOffsetY = win.lastmousey - win.mousey;
+        float mouseOffsetX = win.lastmousex - win.mousex;
+
+        if (std::abs(mouseOffsetY) > 0.00001f) {
+            camera.moveCameraY(mouseOffsetY * 0.01f);
+        }
+
+        if (win.mouseButtons[0] && std::abs(mouseOffsetX) > 0.00001f) {
+            camera.rotate(-mouseOffsetX * 0.01f);
+        } else if (std::abs(mouseOffsetX) > 0.00001f) {
+            camera.moveCameraXZ(-mouseOffsetX * 0.01f);
+        }
+
+        win.lastmousex = win.mousex;
+        win.lastmousey = win.mousey;
+
         float dt = tim.dt();
         time += dt;
         time = fmodf(time, 2 * 3.1415f); // Avoid precision issues
 
-        Vec3 from = Vec3(11 * cos(time), 5, 11 * sinf(time));
-        //camera.from = from;
+        // Vec3 from = Vec3(11 * cos(time), 5, 11 * sinf(time));
+        // camera.from = from;
 
         core.beginRenderPass();
 

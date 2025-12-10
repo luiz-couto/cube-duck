@@ -58,6 +58,10 @@ public:
         vertexShaderCB->W.setTranslation(t.x, t.y, t.z);
     }
 
+    void rotateY(float angle) {
+        vertexShaderCB->W.setRotationY(angle);
+    }
+
     void draw(Core* core, Camera* camera, AnimationInstance* animationInstance) {
         core->beginRenderPass();
 

@@ -15,9 +15,12 @@ public:
     std::string windowName;
 
     bool keys[256];
-    int mousex;
-    int mousey;
+    int mousex = 1024 / 2;
+    int mousey = 768 / 2;
     bool mouseButtons[3];
+
+    int lastmousex = 1024 / 2;
+    int lastmousey = 768 / 2;
 
     Window();
     void init(int _windowHeight, int _windowWidth, int window_x, int window_y, std::string _windowName);
