@@ -71,7 +71,7 @@ class Camera {
             float newDistance = distance + delta;
             Vec3 newFrom = Vec3(from.x + direction.x * delta, from.y + direction.y * delta, from.z + direction.z * delta);
             
-            if (newFrom.y < 5.0f || newFrom.y > 40.0f) return;
+            if (newFrom.y < MIN_ZOOM_Y || newFrom.y > MAX_ZOOM_Y ) return;
             from = newFrom;
         }
     }
