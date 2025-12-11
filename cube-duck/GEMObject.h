@@ -18,7 +18,7 @@ public:
 
     GEMObject(ShaderManager* sm, Core* core, const std::string& filename) : shaderManager(sm), staticMesh(core), filename(filename) {}
 
-    void init(Core* core, VertexDefaultShaderCB* vertexShader = nullptr) {
+    void init(Core* core, std::vector<Matrix> worldPositions, VertexDefaultShaderCB* vertexShader = nullptr) {
         if (vertexShader == nullptr) {
             vertexShader = new VertexDefaultShaderCB();
             vertexShader->W.setIdentity();
@@ -27,7 +27,7 @@ public:
         vertexShaderCB = vertexShader;
 
         // Build geometry
-        staticMesh.load(filename);
+        staticMesh.load(filename, worldPositions);
 
         Shader* vertexShaderBlob = shaderManager->getVertexShader("shaders/vertex/VertexShader.hlsl", vertexShaderCB);
         Shader* pixelShaderBlob = shaderManager->getShader("shaders/pixel/PixelShaderNormals.hlsl", PIXEL_SHADER);

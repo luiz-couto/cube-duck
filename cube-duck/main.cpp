@@ -49,7 +49,18 @@ void mainLoop() {
     ShaderManager* shaderManager = new ShaderManager(&core);
     Camera camera;
 
-    Cube* cube = Cube::createGrassCube(shaderManager, &core);
+    std::vector<Matrix> worldPositions = {};
+    for (int y = -5; y < 5; y++) {
+        for (int i = -5; i < 5; i++) {
+            for (int j=-5; j<5; j++) {
+                Matrix world;
+                world = world.setTranslation(Vec3(i * 2, y * 1.5, j * 2));
+                worldPositions.push_back(world);
+            }
+        }
+    }
+
+    Cube* cube = Cube::createGrassCube(shaderManager, &core, worldPositions);
     GEMAnimatedObject duck(shaderManager, "models/Duck-white.gem");
     
     AnimationInstance animatedInstance;
@@ -63,10 +74,6 @@ void mainLoop() {
 
     animatedInstance.init(&duck.animatedModel->animation, 0);
     memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
-    
-    //cube.scale(0.01f);
-    //acacia.init(&core, &vsCBStaticModel);
-    //sphere.init(&core, &vsCBStaticModel);
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -89,21 +96,6 @@ void mainLoop() {
 
         core.beginRenderPass();
 
-        // Draw first cube at origin
-        cube->translate(Vec3(0.0f, 0.0f, 0.0f));
-        cube->draw(&core, &camera);
-
-        // Draw second cube at offset position
-        cube->translate(Vec3(2.0f, 0.0f, 0.0f));
-        cube->draw(&core, &camera);
-
-        cube->translate(Vec3(0.0f, 0.0f, 2.0f));
-        cube->draw(&core, &camera);
-
-        cube->translate(Vec3(2.0f, 0.0f, 2.0f));
-        cube->draw(&core, &camera);
-
-        cube->translate(Vec3(1.0f, 2.0f, 1.0f));
         cube->draw(&core, &camera);
 
         animatedInstance.update("idle variation", dt);
@@ -113,7 +105,7 @@ void mainLoop() {
 		}
 
         duck.scale(0.02f);
-        duck.translate(Vec3(1.0f, 4.0f, 1.0f));
+        duck.translate(Vec3(1.0f, 8.0f, 1.0f));
         duck.draw(&core, &camera, &animatedInstance);
 
         core.finishFrame();

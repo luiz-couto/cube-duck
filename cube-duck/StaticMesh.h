@@ -10,7 +10,7 @@ public:
 
     StaticMesh(Core* core) : core(core) {}
 
-    void load(const std::string& filename) {
+    void load(const std::string& filename, std::vector<Matrix> worldMatrices) {
         GEMLoader::GEMModelLoader loader;
         std::vector<GEMLoader::GEMMesh> gemmeshes;
         loader.load(filename, gemmeshes);
@@ -22,7 +22,7 @@ public:
                 memcpy(&v, &gemmeshes[i].verticesStatic[j], sizeof(STATIC_VERTEX));
                 vertices.push_back(v);
             }
-            mesh->initFromVec(core, vertices, gemmeshes[i].indices);
+            mesh->initFromVec(core, vertices, gemmeshes[i].indices, worldMatrices);
             meshes.push_back(mesh);
         }
     }

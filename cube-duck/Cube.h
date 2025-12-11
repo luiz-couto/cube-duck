@@ -21,7 +21,7 @@ public:
     CubePixelShaderCB* pixelShaderCB;
     Cube(ShaderManager* sm, Core* core, const std::string& filename) : GEMObject(sm, core, filename) {}
 
-    void init(Core* core, Vec3 topColor = Vec3(0.2, 1.0, 0.2), Vec3 bottomColor = Vec3(0.45, 0.2, 0.05), VertexDefaultShaderCB* vertexShader = nullptr, CubePixelShaderCB* pixelShader = nullptr) {
+    void init(Core* core, std::vector<Matrix> worldPositions, Vec3 topColor = Vec3(0.2, 1.0, 0.2), Vec3 bottomColor = Vec3(0.45, 0.2, 0.05), VertexDefaultShaderCB* vertexShader = nullptr, CubePixelShaderCB* pixelShader = nullptr) {
         if (vertexShader == nullptr) {
             vertexShader = new VertexDefaultShaderCB();
             vertexShader->W.setIdentity();
@@ -40,7 +40,7 @@ public:
         pixelShaderCB = pixelShader;
 
         // Build geometry
-        staticMesh.load(filename);
+        staticMesh.load(filename, worldPositions);
 
         Shader* vertexShaderBlob = shaderManager->getVertexShader("shaders/vertex/VertexShader.hlsl", vertexShaderCB);
         Shader* pixelShaderBlob = shaderManager->getPixelShader("shaders/pixel/CubePixelShader.hlsl", pixelShaderCB);
@@ -71,15 +71,21 @@ public:
         staticMesh.draw();
     }
 
-    static Cube* createGrassCube(ShaderManager* sm, Core* core) {
+    static Cube* createGrassCube(ShaderManager* sm, Core* core, std::vector<Matrix> worldPositions) {
         Cube* cube = new Cube(sm, core, "models/cube.gem");
-        cube->init(core, Vec3(0.2, 1.0, 0.2), Vec3(0.45, 0.2, 0.05)); // green to brown
+        cube->init(core, worldPositions, Vec3(0.2, 1.0, 0.2), Vec3(0.45, 0.2, 0.05)); // green to brown
         return cube;
     }
 
-    static Cube* createIceCube(ShaderManager* sm, Core* core) {
+    static Cube* createDirtCube(ShaderManager* sm, Core* core, std::vector<Matrix> worldPositions) {
         Cube* cube = new Cube(sm, core, "models/cube.gem");
-        cube->init(core, Vec3(0.8, 0.9, 1.0), Vec3(0.5, 0.7, 0.9)); // light blue to darker blue
+        cube->init(core, worldPositions, Vec3(0.45, 0.2, 0.05), Vec3(0.45, 0.2, 0.05)); // all brown
+        return cube;
+    }
+
+    static Cube* createIceCube(ShaderManager* sm, Core* core, std::vector<Matrix> worldPositions) {
+        Cube* cube = new Cube(sm, core, "models/cube.gem");
+        cube->init(core, worldPositions, Vec3(0.8, 0.9, 1.0), Vec3(0.5, 0.7, 0.9)); // light blue to darker blue
         return cube;
     }
 };
