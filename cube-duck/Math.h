@@ -413,7 +413,6 @@ public:
     }
 
     void setRotationY(float angle) {
-        setIdentity();
         float cos = std::cos(angle);
         float sin = std::sin(angle);
         m[0] = cos;

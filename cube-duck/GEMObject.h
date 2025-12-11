@@ -52,6 +52,10 @@ public:
         vertexShaderCB->W = vertexShaderCB->W.setTranslation(t);
     }
 
+    void rotateY(float angle) {
+        vertexShaderCB->W.setRotationY(angle);
+    }
+
     void updateConstantsVertexShader(Core* core) {
         shaderManager->updateConstant("shaders/vertex/VertexShader.hlsl", "W", &vertexShaderCB->W);
         shaderManager->updateConstant("shaders/vertex/VertexShader.hlsl", "VP", &vertexShaderCB->VP);
