@@ -4,6 +4,9 @@
 #include <Windows.h>
 #include <string>
 
+#define WINDOW_HEIGHT 728
+#define WINDOW_WIDTH 1024
+
 #define WINDOW_GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
 #define WINDOW_GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
 
@@ -15,12 +18,13 @@ public:
     std::string windowName;
 
     bool keys[256];
-    int mousex = 1024 / 2;
-    int mousey = 768 / 2;
+    int mousex = WINDOW_WIDTH / 2;
+    int mousey = WINDOW_HEIGHT / 2;
     bool mouseButtons[3];
 
-    int lastmousex = 1024 / 2;
-    int lastmousey = 768 / 2;
+    int lastmousex = WINDOW_WIDTH / 2;
+    int lastmousey = WINDOW_HEIGHT / 2;
+    int mouseWheelDelta = 0;
 
     Window();
     void init(int _windowHeight, int _windowWidth, int window_x, int window_y, std::string _windowName);

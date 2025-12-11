@@ -12,7 +12,34 @@
 
 // Create Pipeline Manager to access many strcuts
 
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow) {
+void reactToCameraMovement(Window *win, Camera *camera) {
+    float mouseOffsetY = win->lastmousey - win->mousey;
+    float mouseOffsetX = win->lastmousex - win->mousex;
+
+    if (!win->mouseButtons[0] && std::abs(mouseOffsetY) > 0.00001f) {
+        camera->moveCameraY(mouseOffsetY * 0.01f);
+    }
+
+    if (win->mouseButtons[0] && std::abs(mouseOffsetX) > 0.00001f) {
+        camera->rotate(-mouseOffsetX * 0.01f);
+    } else if (std::abs(mouseOffsetX) > 0.00001f) {
+        camera->moveCameraX(-mouseOffsetX * 0.01f);
+    }
+
+    if (!win->mouseButtons[0] && win->mouseWheelDelta != 0) {
+        camera->zoom(win->mouseWheelDelta * 0.01f);
+        win->mouseWheelDelta = 0;
+    }
+
+    if (win->keys['R']) {
+        camera->resetCamera();
+    }
+
+    win->lastmousex = win->mousex;
+    win->lastmousey = win->mousey;
+}
+
+void mainLoop() {
     Window win;
     win.init(WINDOW_HEIGHT, WINDOW_WIDTH, 0, 0, "My Window");
 
@@ -51,22 +78,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
             break;
         }
 
-        float mouseOffsetY = win.lastmousey - win.mousey;
-        float mouseOffsetX = win.lastmousex - win.mousex;
-
-        if (std::abs(mouseOffsetY) > 0.00001f) {
-            camera.moveCameraY(mouseOffsetY * 0.01f);
-        }
-
-        if (win.mouseButtons[0] && std::abs(mouseOffsetX) > 0.00001f) {
-            camera.rotate(-mouseOffsetX * 0.01f);
-        } else if (std::abs(mouseOffsetX) > 0.00001f) {
-            camera.moveCameraXZ(-mouseOffsetX * 0.01f);
-        }
-
-        win.lastmousex = win.mousex;
-        win.lastmousey = win.mousey;
-
+        reactToCameraMovement(&win, &camera);
+        
         float dt = tim.dt();
         time += dt;
         time = fmodf(time, 2 * 3.1415f); // Avoid precision issues
@@ -107,5 +120,14 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nC
     }
 
     core.flushGraphicsQueue();
+}
+
+// int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow) {
+//     mainLoop();
+//     return 0;
+// }
+
+int main() {
+    mainLoop();
     return 0;
 }
