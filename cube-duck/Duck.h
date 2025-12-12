@@ -10,7 +10,7 @@
 #define DUCK_MODEL_FILE "models/Duck-white.gem"
 #define RUN_VELOCITY 0.05f
 #define WALK_VELOCITY 0.02f
-#define LOADING_FRAME 15
+#define LOADING_FRAME 11
 
 enum DUCK_ANIMATION {
     IDLE_VARIATION,
