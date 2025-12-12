@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Cube.h"
 #include "Duck.h"
+#include "SkyDome.h"
 
 // Create Pipeline Manager to access many strcuts
 
@@ -50,6 +51,9 @@ void mainLoop() {
     ShaderManager* shaderManager = new ShaderManager(&core);
     Camera camera;
 
+    SkyDome sky(shaderManager);
+    sky.init(&core);
+
     std::vector<Matrix> worldPositions = {};
     int radius = 5;
     for (int y = -2; y < 2; y++) {
@@ -86,6 +90,8 @@ void mainLoop() {
         // camera.from = from;
 
         core.beginRenderPass();
+
+        sky.draw(&core, &camera);
 
         cubes->draw(&core, &camera);
 
