@@ -87,7 +87,7 @@ void mainLoop() {
 
         cube->draw(&core, &camera);
 
-        duck.updateAnimation(dt);
+        duck.updateAnimation(&win, dt);
         duck.draw(&camera);
 
         core.finishFrame();

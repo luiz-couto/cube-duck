@@ -404,8 +404,9 @@ public:
 
     void setRotationX(float angle) {
         setIdentity();
-        float cos = std::cos(angle);
-        float sin = std::sin(angle);
+        float radians = (3.14159f / 180.0f) * angle;
+        float cos = std::cos(radians);
+        float sin = std::sin(radians);
         m[5] = cos;
         m[6] = -sin;
         m[9] = sin;
@@ -413,8 +414,10 @@ public:
     }
 
     void setRotationY(float angle) {
-        float cos = std::cos(angle);
-        float sin = std::sin(angle);
+        setIdentity();
+        float radians = (3.14159f / 180.0f) * angle;
+        float cos = std::cos(radians);
+        float sin = std::sin(radians);
         m[0] = cos;
         m[2] = sin;
         m[8] = -sin;
@@ -423,8 +426,9 @@ public:
 
     void setRotationZ(float angle) {
         setIdentity();
-        float cos = std::cos(angle);
-        float sin = std::sin(angle);
+        float radians = (3.14159f / 180.0f) * angle;
+        float cos = std::cos(radians);
+        float sin = std::sin(radians);
         m[0] = cos;
         m[1] = -sin;
         m[4] = sin;
@@ -432,6 +436,7 @@ public:
     }
 
     void setTranslation(float tx, float ty, float tz) {
+        setIdentity();
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
@@ -446,9 +451,17 @@ public:
     }
 
     void setScaling(float sx, float sy, float sz) {
+        setIdentity();
         m[0] = sx;
         m[5] = sy;
         m[10] = sz;
+    }
+
+    void setScaling(float s) {
+        setIdentity();
+        m[0] = s;
+        m[5] = s;
+        m[10] = s;
     }
 
     static Matrix setScaling(const Vec3& s) {
@@ -579,6 +592,16 @@ public:
         m[11] = -from.dot(z);
     }
 
+};
+
+template <>
+struct std::formatter<Matrix> : std::formatter<float> {
+    auto format(const Matrix& m, auto& ctx) const {
+        return std::format_to(
+            ctx.out(),
+            "Matrix[{}, {}, {}, {}]\n[{}, {}, {}, {}]\n[{}, {}, {}, {}]\n[{}, {}, {}, {}]",
+            m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5], m.m[6], m.m[7], m.m[8], m.m[9], m.m[10], m.m[11], m.m[12], m.m[13], m.m[14], m.m[15]);
+    }
 };
 
 class ShadingFrame {
