@@ -9,6 +9,7 @@
 #include "GEMAnimatedObject.h"
 #include "Camera.h"
 #include "Cube.h"
+#include "Duck.h"
 
 // Create Pipeline Manager to access many strcuts
 
@@ -61,19 +62,7 @@ void mainLoop() {
     }
 
     Cube* cube = Cube::createGrassCube(shaderManager, &core, worldPositions);
-    GEMAnimatedObject duck(shaderManager, "models/Duck-white.gem");
-    
-    AnimationInstance animatedInstance;
-    VertexShaderCBAnimatedModel vsCBAnimatedModel;
-    duck.init(&core, &vsCBAnimatedModel);
-
-    //Cube cube(shaderManager, &GrassCubePixelShader);
-    
-    // VertexShaderCBAnimatedModel vsCBAnimatedModel;
-
-
-    animatedInstance.init(&duck.animatedModel->animation, 0);
-    memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
+    Duck duck(shaderManager, &core);
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -98,15 +87,8 @@ void mainLoop() {
 
         cube->draw(&core, &camera);
 
-        animatedInstance.update("idle variation", dt);
-		if (animatedInstance.animationFinished() == true)
-		{
-			animatedInstance.resetAnimationTime();
-		}
-
-        duck.scale(0.02f);
-        duck.translate(Vec3(1.0f, 8.0f, 1.0f));
-        duck.draw(&core, &camera, &animatedInstance);
+        duck.updateAnimation(dt);
+        duck.draw(&camera);
 
         core.finishFrame();
     }
