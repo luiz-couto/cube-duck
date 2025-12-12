@@ -12,6 +12,9 @@
 #define WALK_VELOCITY 0.02f
 #define LOADING_FRAME 11
 #define DUCK_BOX_SIZE 2
+#define JUMP_HEIGHT 3.0f
+#define JUMP_INCREMENT 0.15f
+#define GRAVITY_PULL 0.05f
 
 enum DUCK_ANIMATION {
     IDLE_VARIATION,
@@ -44,6 +47,8 @@ public:
     Matrix translation;
 
     DUCK_ANIMATION currentAnimation;
+    bool isJumping = false;
+    float jumpingCurrentHeight = 0;
 
     Duck(ShaderManager *_sm, Core *_core, Vec3 _position = {1.0f, 8.0f, 1.0f}): sm(_sm), core(_core), position(_position), duckModel(sm, DUCK_MODEL_FILE) {
         duckModel.init(core, &vsCBAnimatedModel);
@@ -55,7 +60,7 @@ public:
     }
 
     void reactToMovementKeys(Window *win) {
-        position.y -= 0.05f;
+        position.y -= GRAVITY_PULL;
 
         if (win->keys['W']) {
             if (rotationAngle == 0 || rotationAngle == 360) position.z -= RUN_VELOCITY;
@@ -75,8 +80,16 @@ public:
             currentAnimation = WALK_BACKWARDS;
         }
 
-        if (win->keys[' ']) {
-            position.y += 0.15f;
+        if (isJumping) {
+            if (jumpingCurrentHeight < JUMP_HEIGHT) {
+                position.y += JUMP_INCREMENT;
+                jumpingCurrentHeight += JUMP_INCREMENT;
+            }
+        }
+
+        if (!isJumping && jumpingCurrentHeight == 0 && win->keys[' ']) {
+            position.y += JUMP_INCREMENT;
+            isJumping = true;
             currentAnimation = HIT_REACTION;
         }
 

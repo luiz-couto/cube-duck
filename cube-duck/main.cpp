@@ -99,6 +99,8 @@ void mainLoop() {
 
             bool isColidingY = duck.checkCollisionY(&cubeWorldMatrix, 2);
             if (isColidingY) {
+                duck.isJumping = false;
+                duck.jumpingCurrentHeight = 0.0f;
                 duck.blockMovementY();
             }
 
