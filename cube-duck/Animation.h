@@ -178,6 +178,10 @@ public:
 		return false;
 	}
 
+	float getCurrentAnimationDuration() {
+		return animation->animations[usingAnimation].duration();
+	}
+
 	Matrix findWorldMatrix(std::string boneName) {
 		int boneID = animation->skeleton.findBone(boneName);
 		std::vector<int> boneChain;
