@@ -11,6 +11,7 @@
 #define RUN_VELOCITY 0.05f
 #define WALK_VELOCITY 0.02f
 #define LOADING_FRAME 11
+#define DUCK_BOX_SIZE 2
 
 enum DUCK_ANIMATION {
     IDLE_VARIATION,
@@ -18,10 +19,12 @@ enum DUCK_ANIMATION {
     TURN_90_LEFT,
     TURN_90_RIGHT,
     RUN_FORWARD,
-    WALK_BACKWARDS
+    WALK_BACKWARDS,
+    ATTACK,
+    HIT_REACTION
 };
 
-const char *AnimationsMap[] = { "idle variation", "walk forward", "turn 90 l", "turn 90 r", "run forward", "walk backwards" };
+const char *AnimationsMap[] = { "idle variation", "walk forward", "turn 90 l", "turn 90 r", "run forward", "walk backwards", "attack01", "hit reaction" };
 
 class Duck {
 public:
@@ -29,6 +32,7 @@ public:
     Core *core;
 
     Vec3 position;
+    Vec3 lastPosition;
     int rotationAngle = 0;
     int loadingFrame = 0;
     AnimationInstance animatedInstance;
@@ -51,6 +55,8 @@ public:
     }
 
     void reactToMovementKeys(Window *win) {
+        position.y -= 0.05f;
+
         if (win->keys['W']) {
             if (rotationAngle == 0 || rotationAngle == 360) position.z -= RUN_VELOCITY;
             if (rotationAngle == 90) position.x -= RUN_VELOCITY;
@@ -69,6 +75,11 @@ public:
             currentAnimation = WALK_BACKWARDS;
         }
 
+        if (win->keys[' ']) {
+            position.y += 0.15f;
+            currentAnimation = HIT_REACTION;
+        }
+
 
         if (loadingFrame < LOADING_FRAME) {
             loadingFrame++;
@@ -77,6 +88,7 @@ public:
         if (loadingFrame == LOADING_FRAME) {
             loadingFrame = 0;
         }
+
 
         if (win->keys['A']) {
             rotationAngle += 90;
@@ -101,9 +113,48 @@ public:
     }
 
     void draw(Camera *camera) {
+        lastPosition = position;
+
         rotation.setRotationY(rotationAngle);
         translation = translation.setTranslation(position);
         duckModel.vertexShaderCB->W = (translation.mul(rotation)).mul(scale);
         duckModel.draw(core, camera, &animatedInstance);
+    }
+
+    void blockMovementX() {
+        position.x = lastPosition.x;
+    }
+
+    void blockMovementY() {
+        position.y = lastPosition.y;
+    }
+
+    void blockMovementZ() {
+        position.z = lastPosition.z;
+    }
+
+    bool checkBoxCollision(Vec3 axisPosition, Vec3 point, float size) {
+        bool overlapX = std::abs(axisPosition.x - point.x) < (DUCK_BOX_SIZE / 2 + size / 2);
+        bool overlapY = std::abs(axisPosition.y - point.y) < (DUCK_BOX_SIZE / 2 + size / 2);
+        bool overlapZ = std::abs(axisPosition.z - point.z) < (DUCK_BOX_SIZE / 2 + size / 2);
+        return overlapX && overlapY && overlapZ;
+    }
+
+    bool checkCollisionX(Matrix *worldMatrix, float size) {
+        Vec3 axisPosition = Vec3(position.x, lastPosition.y, lastPosition.z);
+        Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7],worldMatrix->m[11]);
+        return checkBoxCollision(axisPosition, point, size);
+    }
+
+    bool checkCollisionY(Matrix *worldMatrix, float size) {
+        Vec3 axisPosition = Vec3(lastPosition.x, position.y, lastPosition.z);
+        Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7],worldMatrix->m[11]);
+        return checkBoxCollision(axisPosition, point, size);
+    }
+
+    bool checkCollisionZ(Matrix *worldMatrix, float size) {
+        Vec3 axisPosition = Vec3(lastPosition.x, lastPosition.y, position.z);
+        Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7],worldMatrix->m[11]);
+        return checkBoxCollision(axisPosition, point, size);
     }
 };

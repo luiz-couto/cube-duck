@@ -51,18 +51,20 @@ void mainLoop() {
     Camera camera;
 
     std::vector<Matrix> worldPositions = {};
-    for (int y = -5; y < 5; y++) {
-        for (int i = -5; i < 5; i++) {
-            for (int j=-5; j<5; j++) {
+    int radius = 5;
+    for (int y = -2; y < 2; y++) {
+        for (int i = -radius; i < radius; i++) {
+            for (int j= -radius; j < radius; j++) {
                 Matrix world;
                 world = world.setTranslation(Vec3(i * 2, y * 1.5, j * 2));
                 worldPositions.push_back(world);
             }
         }
+        radius -= 2;
     }
 
-    Cube* cube = Cube::createGrassCube(shaderManager, &core, worldPositions);
-    Duck duck(shaderManager, &core);
+    Cube* cubes = Cube::createGrassCube(shaderManager, &core, worldPositions);
+    Duck duck(shaderManager, &core, Vec3(3.0f, 5.0f, 1.0f));
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -85,9 +87,27 @@ void mainLoop() {
 
         core.beginRenderPass();
 
-        cube->draw(&core, &camera);
+        cubes->draw(&core, &camera);
 
         duck.updateAnimation(&win, dt);
+
+        for (auto cubeWorldMatrix : worldPositions) {
+            bool isColidingX = duck.checkCollisionX(&cubeWorldMatrix, 2);
+            if (isColidingX) {
+                duck.blockMovementX();
+            }
+
+            bool isColidingY = duck.checkCollisionY(&cubeWorldMatrix, 2);
+            if (isColidingY) {
+                duck.blockMovementY();
+            }
+
+            bool isColidingZ = duck.checkCollisionZ(&cubeWorldMatrix, 2);
+            if (isColidingZ) {
+                duck.blockMovementZ();
+            }
+        }
+
         duck.draw(&camera);
 
         core.finishFrame();
