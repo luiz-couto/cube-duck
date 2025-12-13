@@ -33,7 +33,7 @@ public:
             pixelShader = new CubePixelShaderCB();
             pixelShader->topColor = topColor;
             pixelShader->bottomColor = bottomColor;
-            pixelShader->heightThreshold = 1.45f;
+            pixelShader->heightThreshold = 1.7f;
             pixelShader->lightDirection = Vec3(0.4, 1.0, 0.3);
             pixelShader->lightStrength = 0.7f;
         }
