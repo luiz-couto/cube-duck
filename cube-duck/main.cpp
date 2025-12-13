@@ -91,7 +91,7 @@ void mainLoop() {
 
         core.beginRenderPass();
 
-        sky.draw(&core, &camera);
+        sky.draw(&core, &camera, dt);
 
         cubes->draw(&core, &camera);
 

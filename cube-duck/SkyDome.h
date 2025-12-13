@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "Texture.h"
 
+#define ROTATION_INCREMENT 2.0f
+
 class SkyDome {
 public:
     Mesh mesh;
@@ -16,6 +18,7 @@ public:
     VertexLayoutCache vertexLayoutCache;
     VertexDefaultShaderCB* vertexShaderCB;
     Texture *texture;
+    float skyRotationAngle = 0.0f;
 
     SkyDome(ShaderManager* sm) : shaderManager(sm) {}
 
@@ -97,12 +100,15 @@ public:
         shaderManager->getVertexShader("shaders/vertex/VertexShader.hlsl", vertexShaderCB)->apply(core);
     }
 
-    void draw(Core* core, Camera *camera) {
+    void draw(Core* core, Camera *camera, float dt) {
+        skyRotationAngle += dt * ROTATION_INCREMENT;
         core->beginRenderPass();
 
         psos.bind(core, "SkyDome");
 
         updateFromCamera(core, camera);
+
+        vertexShaderCB->W.setRotationY(skyRotationAngle);
         updateConstantsVertexShader(core);
 
         shaderManager->updateTexturePS(core, "SkyDome", texture->heapOffset);
