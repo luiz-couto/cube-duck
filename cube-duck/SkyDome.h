@@ -6,6 +6,7 @@
 #include "ShaderManager.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "Texture.h"
 
 class SkyDome {
 public:
@@ -14,6 +15,7 @@ public:
     PSOManager psos;
     VertexLayoutCache vertexLayoutCache;
     VertexDefaultShaderCB* vertexShaderCB;
+    Texture *texture;
 
     SkyDome(ShaderManager* sm) : shaderManager(sm) {}
 
@@ -44,8 +46,8 @@ public:
                 Vec3 position(radius * sinTheta * cosPhi, radius * cosTheta,
                 radius * sinTheta * sinPhi);
                 Vec3 normal = position.normalize();
-                float tu = 1.0f - (float)lon / segments;
-                float tv = 1.0f - (float)lat / rings;
+                float tu = (float)lon / segments;
+                float tv = (float)lat / rings;
                 vertices.push_back(addVertex(position, normal, tu, tv));
             }
         }
@@ -64,13 +66,17 @@ public:
             }
         }
 
+        // load texture
+        texture = new Texture();
+        texture->load(core, "models/textures/sky_2.png");
+
         std::vector<Matrix> worldMatrices;
         Matrix identity;
         worldMatrices.push_back(identity);
         mesh.initFromVec(core, vertices, indices, worldMatrices);
 
-        Shader* vertexShaderBlob = shaderManager->getVertexShader("shaders/vertex/VertexShader.hlsl", vertexShader);
-        Shader* pixelShaderBlob = shaderManager->getShader("shaders/pixel/PixelShaderNormals.hlsl", PIXEL_SHADER);
+        Shader* vertexShaderBlob = shaderManager->getVertexShader("shaders/vertex/SkyVertexShader.hlsl", vertexShader);
+        Shader* pixelShaderBlob = shaderManager->getShader("shaders/pixel/PixelShaderTexture.hlsl", PIXEL_SHADER);
         psos.createPSO(core, "SkyDome", vertexShaderBlob->shaderBlob, pixelShaderBlob->shaderBlob, vertexLayoutCache.getStaticLayout());
     }
 
@@ -98,6 +104,8 @@ public:
 
         updateFromCamera(core, camera);
         updateConstantsVertexShader(core);
+
+        shaderManager->updateTexturePS(core, "SkyDome", texture->heapOffset);
 
         mesh.draw(core);
     }
