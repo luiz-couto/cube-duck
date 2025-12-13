@@ -29,8 +29,8 @@ PS_INPUT VS(VS_INPUT input) {
     float3 grassToPlayer = worldPos.xyz - playerPos.xyz;
     float dist = length(grassToPlayer);
 
-    float bendRadius = 2;
-    float bendStrength = 0.7;
+    float bendRadius = 1.5;
+    float bendStrength = 0.6;
 
     if (dist < bendRadius && dist > 0.001) {
         float bendFactor = 1.0 - (dist / bendRadius);
