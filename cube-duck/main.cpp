@@ -11,6 +11,16 @@
 #include "Cube.h"
 #include "Duck.h"
 #include "SkyDome.h"
+#include "Grass.h"
+#include <random>
+
+float generateRandomFloat(float min, float max) {
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<float> dist(min, max);
+
+    return dist(mt);
+}
 
 // Create Pipeline Manager to access many strcuts
 
@@ -55,12 +65,30 @@ void mainLoop() {
     sky.init(&core);
 
     std::vector<Matrix> worldPositions = {};
+    std::vector<Matrix> grassPositions = {};
+
     int radius = 5;
     for (int y = -2; y < 2; y++) {
         for (int i = -radius; i < radius; i++) {
             for (int j= -radius; j < radius; j++) {
-                Matrix world;
+                Matrix world, grassWorld;
                 world = world.setTranslation(Vec3(i * 2, y * 1.5, j * 2));
+
+                for (int g = 0; g < 30; g++) {
+                    float minX = (i*2) - 0.9;
+                    float maxX = (i*2) + 0.9;
+
+                    float minZ = (j*2) - 0.9;
+                    float maxZ = (j*2) + 0.9;
+
+                    float x = generateRandomFloat(minX, maxX);
+                    float z = generateRandomFloat(minZ, maxZ);
+
+                    grassWorld = grassWorld.setTranslation(Vec3(x, (y * 1.5) + 2.0f, z)).mul(grassWorld.setScaling(Vec3(0.9,0.9,0.9)));
+                    grassPositions.push_back(grassWorld);
+
+                }
+                
                 worldPositions.push_back(world);
             }
         }
@@ -68,6 +96,7 @@ void mainLoop() {
     }
 
     Cube* cubes = Cube::createGrassCube(shaderManager, &core, worldPositions);
+    Grass* grass = Grass::createGrass(shaderManager, &core, grassPositions);
     Duck duck(shaderManager, &core, Vec3(3.0f, 5.0f, 1.0f));
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
@@ -94,6 +123,7 @@ void mainLoop() {
         sky.draw(&core, &camera, dt);
 
         cubes->draw(&core, &camera);
+        grass->draw(&core, &camera);
 
         duck.updateAnimation(&win, dt);
 

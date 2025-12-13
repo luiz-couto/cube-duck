@@ -94,10 +94,10 @@ public:
     }
 
     void updateConstantsVertexShader(Core* core) {
-        shaderManager->updateConstant("shaders/vertex/VertexShader.hlsl", "W", &vertexShaderCB->W);
-        shaderManager->updateConstant("shaders/vertex/VertexShader.hlsl", "VP", &vertexShaderCB->VP);
+        shaderManager->updateConstant("shaders/vertex/SkyVertexShader.hlsl", "W", &vertexShaderCB->W);
+        shaderManager->updateConstant("shaders/vertex/SkyVertexShader.hlsl", "VP", &vertexShaderCB->VP);
 
-        shaderManager->getVertexShader("shaders/vertex/VertexShader.hlsl", vertexShaderCB)->apply(core);
+        shaderManager->getVertexShader("shaders/vertex/SkyVertexShader.hlsl", vertexShaderCB)->apply(core);
     }
 
     void draw(Core* core, Camera *camera, float dt) {

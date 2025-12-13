@@ -73,7 +73,7 @@ public:
 
     static Cube* createGrassCube(ShaderManager* sm, Core* core, std::vector<Matrix> worldPositions) {
         Cube* cube = new Cube(sm, core, "models/cube.gem");
-        cube->init(core, worldPositions, Vec3(0.2, 1.0, 0.2), Vec3(0.45, 0.2, 0.05)); // green to brown
+        cube->init(core, worldPositions, Vec3(0.1, 0.6, 0.1), Vec3(0.45, 0.2, 0.05)); // green to brown
         return cube;
     }
 
