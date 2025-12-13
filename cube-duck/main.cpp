@@ -96,8 +96,8 @@ void mainLoop() {
     }
 
     Cube* cubes = Cube::createGrassCube(shaderManager, &core, worldPositions);
-    Grass* grass = Grass::createGrass(shaderManager, &core, grassPositions);
     Duck duck(shaderManager, &core, Vec3(3.0f, 5.0f, 1.0f));
+    Grass* grass = Grass::createGrass(shaderManager, &core, grassPositions, &duck.vsCBAnimatedModel.W);
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -123,7 +123,7 @@ void mainLoop() {
         sky.draw(&core, &camera, dt);
 
         cubes->draw(&core, &camera);
-        grass->draw(&core, &camera);
+        grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
 
         duck.updateAnimation(&win, dt);
 
