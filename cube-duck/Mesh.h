@@ -65,7 +65,6 @@ public:
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
     unsigned int numMeshIndices;
     int numInstances;
-    
 
     Mesh() {}
 
