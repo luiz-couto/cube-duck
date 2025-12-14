@@ -12,6 +12,7 @@
 #include "Duck.h"
 #include "SkyDome.h"
 #include "Grass.h"
+#include "CubeTextured.h"
 #include <random>
 
 float generateRandomFloat(float min, float max) {
@@ -150,8 +151,13 @@ void mainLoop() {
     append(allCubesPositions, darkDirtPositions);
     append(allCubesPositions, grassCubesPositions);
 
+    BRDFLightCB light;
+    light.lightColor = Vec3(1.0, 1.0, 1.0);
+    light.lightDirection = Vec3(0.4, 1.0, 0.3);
+    light.lightStrength = 0.7f;
+
     Cube* grassCubes = Cube::createGrassCube(shaderManager, &core, grassCubesPositions);
-    Cube* lightDirtCubes = Cube::createLightDirtCube(shaderManager, &core, lightDirtPositions);
+    CubeTextured* lightDirtCubes = CubeTextured::createBrickCubes(shaderManager, &core, lightDirtPositions, &light);
     Cube* darktDirtCubes = Cube::createDarkDirtCube(shaderManager, &core, darkDirtPositions);
 
     Duck duck(shaderManager, &core, Vec3(8.0f, 16.0f, -3.0f));

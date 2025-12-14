@@ -137,6 +137,7 @@
     <ClInclude Include="ConstantBufferReflection.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="CubeTextured.h" />
     <ClInclude Include="Duck.h" />
     <ClInclude Include="Fence.h" />
     <ClInclude Include="GamesEngineeringBase.h" />
