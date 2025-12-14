@@ -11,7 +11,7 @@
 #define RUN_VELOCITY 0.05f
 #define WALK_VELOCITY 0.02f
 #define LOADING_FRAME 11
-#define DUCK_BOX_SIZE 2
+#define DUCK_BOX_SIZE 1.5
 #define JUMP_HEIGHT 3.0f
 #define JUMP_INCREMENT 0.15f
 #define GRAVITY_PULL 0.05f
@@ -50,13 +50,19 @@ public:
     bool isJumping = false;
     float jumpingCurrentHeight = 0;
 
-    Duck(ShaderManager *_sm, Core *_core, Vec3 _position = {1.0f, 8.0f, 1.0f}): sm(_sm), core(_core), position(_position), duckModel(sm, DUCK_MODEL_FILE) {
+    Vec3 startPosition;
+
+    Duck(ShaderManager *_sm, Core *_core, Vec3 _position): sm(_sm), core(_core), position(_position), startPosition(_position), duckModel(sm, DUCK_MODEL_FILE) {
         duckModel.init(core, &vsCBAnimatedModel);
         animatedInstance.init(&duckModel.animatedModel->animation, 0);
         memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
 
         scale.setScaling(0.02f, 0.02f, 0.02f);
         currentAnimation = IDLE_VARIATION;
+    }
+
+    void resetPosition() {
+        position = startPosition;
     }
 
     void reactToMovementKeys(Window *win) {
@@ -147,11 +153,15 @@ public:
     }
 
     bool checkBoxCollision(Vec3 axisPosition, Vec3 point, float size) {
-        bool overlapX = std::abs(axisPosition.x - point.x) < (DUCK_BOX_SIZE / 2 + size / 2);
-        bool overlapY = std::abs(axisPosition.y - point.y) < (DUCK_BOX_SIZE / 2 + size / 2);
-        bool overlapZ = std::abs(axisPosition.z - point.z) < (DUCK_BOX_SIZE / 2 + size / 2);
-        return overlapX && overlapY && overlapZ;
-    }
+    float duckHalfX = 0.5f;  // Narrower on X
+    float duckHalfY = 0.5f;  // Full height on Y
+    float duckHalfZ = 0.5f;  // Full depth on Z
+    
+    bool overlapX = std::abs(axisPosition.x - point.x) < (duckHalfX + size / 2);
+    bool overlapY = std::abs(axisPosition.y - point.y) < (duckHalfY + size / 2);
+    bool overlapZ = std::abs(axisPosition.z - point.z) < (duckHalfZ + size / 2);
+    return overlapX && overlapY && overlapZ;
+}
 
     bool checkCollisionX(Matrix *worldMatrix, float size) {
         Vec3 axisPosition = Vec3(position.x, lastPosition.y, lastPosition.z);
@@ -160,14 +170,14 @@ public:
     }
 
     bool checkCollisionY(Matrix *worldMatrix, float size) {
-        Vec3 axisPosition = Vec3(lastPosition.x, position.y, lastPosition.z);
+        Vec3 axisPosition = Vec3(lastPosition.x, position.y - 0.5f, lastPosition.z);
         Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7],worldMatrix->m[11]);
         return checkBoxCollision(axisPosition, point, size);
     }
 
     bool checkCollisionZ(Matrix *worldMatrix, float size) {
-        Vec3 axisPosition = Vec3(lastPosition.x, lastPosition.y, position.z);
-        Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7],worldMatrix->m[11]);
+        Vec3 axisPosition = Vec3(lastPosition.x, lastPosition.y + 0.3f, position.z);
+        Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7], worldMatrix->m[11]);
         return checkBoxCollision(axisPosition, point, size);
     }
 };

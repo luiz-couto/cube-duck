@@ -24,7 +24,7 @@ float generateRandomFloat(float min, float max) {
 
 // Create Pipeline Manager to access many strcuts
 
-void reactToCameraMovement(Window *win, Camera *camera) {
+void reactToCameraMovement(Window *win, Camera *camera, Duck *duck) {
     float mouseOffsetY = win->lastmousey - win->mousey;
     float mouseOffsetX = win->lastmousex - win->mousex;
 
@@ -45,10 +45,54 @@ void reactToCameraMovement(Window *win, Camera *camera) {
 
     if (win->keys['R']) {
         camera->resetCamera();
+        duck->resetPosition();
     }
 
     win->lastmousex = win->mousex;
     win->lastmousey = win->mousey;
+}
+
+void generateCubesPositions(Vec3 startPos, int numCubesY, int numCubesX, int numCubesZ, std::vector<Matrix> &cubesPositions) {
+    for (int y = 0; y < numCubesY; y++ ) {
+        for (int x = 0; x < numCubesX; x++) {
+            for (int z = 0; z < numCubesZ; z++) {
+                Matrix world;
+                float posX = startPos.x + (x * 2);
+                float posY = startPos.y + (y * 2);
+                float posZ = startPos.z + (z * 2);
+                world = world.setTranslation(Vec3(posX, posY, posZ));
+                cubesPositions.push_back(world);
+            }
+        }
+    }
+}
+
+void generateGrassPositionsFromGrassCubes(std::vector<Matrix> &grassCubesPositions, std::vector<Matrix> &grassPositions) {
+    for (const Matrix &cubeWorld : grassCubesPositions) {
+        Matrix grassWorld;
+        float i = cubeWorld.m[3] / 2;
+        float y = cubeWorld.m[7] / 1.5f;
+        float j = cubeWorld.m[11] / 2;
+
+        for (int g = 0; g < 30; g++) {
+            float minX = (i*2) - 0.9;
+            float maxX = (i*2) + 0.9;
+
+            float minZ = (j*2) - 0.9;
+            float maxZ = (j*2) + 0.9;
+
+            float x = generateRandomFloat(minX, maxX);
+            float z = generateRandomFloat(minZ, maxZ);
+
+            grassWorld = grassWorld.setTranslation(Vec3(x, (y * 1.5) + 2.0f, z)).mul(grassWorld.setScaling(Vec3(0.9,0.9,0.9)));
+            grassPositions.push_back(grassWorld);
+        }
+    }
+}
+
+template <typename T>
+void append(std::vector<T> &target, std::vector<T> &source) {
+    target.insert(target.end(), source.begin(), source.end());
 }
 
 void mainLoop() {
@@ -64,39 +108,53 @@ void mainLoop() {
     SkyDome sky(shaderManager);
     sky.init(&core);
 
-    std::vector<Matrix> worldPositions = {};
+    std::vector<Matrix> lightDirtPositions = {};
+    std::vector<Matrix> darkDirtPositions = {};
+    std::vector<Matrix> grassCubesPositions = {};
     std::vector<Matrix> grassPositions = {};
+    std::vector<Matrix> allCubesPositions = {};
+    
+    // base + right
+    generateCubesPositions(Vec3(-10, 0, -10), 1, 10, 10, darkDirtPositions);
+    generateCubesPositions(Vec3(-10, 2, -10), 1, 10, 10, lightDirtPositions);
+    generateCubesPositions(Vec3(4, 4, -10), 1, 3, 10, grassCubesPositions);
+    
+    // pilar
+    generateCubesPositions(Vec3(4, 6, -4), 3, 1, 2, lightDirtPositions);
+    generateCubesPositions(Vec3(8, 6, -4), 3, 1, 2, lightDirtPositions);
+    generateCubesPositions(Vec3(4, 12, -6), 1, 3, 4, grassCubesPositions);
 
-    int radius = 5;
-    for (int y = -2; y < 2; y++) {
-        for (int i = -radius; i < radius; i++) {
-            for (int j= -radius; j < radius; j++) {
-                Matrix world, grassWorld;
-                world = world.setTranslation(Vec3(i * 2, y * 1.5, j * 2));
+    // bridge
+    generateCubesPositions(Vec3(-10, 12, -4), 1, 7, 2, lightDirtPositions);
 
-                for (int g = 0; g < 30; g++) {
-                    float minX = (i*2) - 0.9;
-                    float maxX = (i*2) + 0.9;
+    // left base
+    generateCubesPositions(Vec3(-10, 4, -10), 1, 4, 10, lightDirtPositions);
+    generateCubesPositions(Vec3(-10, 6, 8), 4, 4, 1, lightDirtPositions);
+    generateCubesPositions(Vec3(-10, 12, 0), 1, 4, 4, lightDirtPositions);
 
-                    float minZ = (j*2) - 0.9;
-                    float maxZ = (j*2) + 0.9;
+    // left tunnel
+    generateCubesPositions(Vec3(-8, 6, -6), 2, 2, 6, lightDirtPositions);
+    generateCubesPositions(Vec3(-4, 6, -6), 3, 1, 7, lightDirtPositions);
+    generateCubesPositions(Vec3(-10, 6, -10), 4, 4, 1, lightDirtPositions);
+    generateCubesPositions(Vec3(-10, 10, -8), 2, 1, 2, lightDirtPositions);
+    generateCubesPositions(Vec3(-4, 10, -8), 1, 1, 1, lightDirtPositions);
+    generateCubesPositions(Vec3(-8, 8, -8), 1, 2, 1, lightDirtPositions);
+    generateCubesPositions(Vec3(-4, 12, -8), 1, 1, 2, lightDirtPositions);
 
-                    float x = generateRandomFloat(minX, maxX);
-                    float z = generateRandomFloat(minZ, maxZ);
+    // grass stand
+    generateCubesPositions(Vec3(0, 4, -10), 1, 1, 2, grassCubesPositions);
 
-                    grassWorld = grassWorld.setTranslation(Vec3(x, (y * 1.5) + 2.0f, z)).mul(grassWorld.setScaling(Vec3(0.9,0.9,0.9)));
-                    grassPositions.push_back(grassWorld);
+    generateGrassPositionsFromGrassCubes(grassCubesPositions, grassPositions);
 
-                }
-                
-                worldPositions.push_back(world);
-            }
-        }
-        radius -= 2;
-    }
+    append(allCubesPositions, lightDirtPositions);
+    append(allCubesPositions, darkDirtPositions);
+    append(allCubesPositions, grassCubesPositions);
 
-    Cube* cubes = Cube::createGrassCube(shaderManager, &core, worldPositions);
-    Duck duck(shaderManager, &core, Vec3(3.0f, 5.0f, 1.0f));
+    Cube* grassCubes = Cube::createGrassCube(shaderManager, &core, grassCubesPositions);
+    Cube* lightDirtCubes = Cube::createLightDirtCube(shaderManager, &core, lightDirtPositions);
+    Cube* darktDirtCubes = Cube::createDarkDirtCube(shaderManager, &core, darkDirtPositions);
+
+    Duck duck(shaderManager, &core, Vec3(8.0f, 16.0f, -3.0f));
     Grass* grass = Grass::createGrass(shaderManager, &core, grassPositions, &duck.vsCBAnimatedModel.W);
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
@@ -109,7 +167,7 @@ void mainLoop() {
             break;
         }
 
-        reactToCameraMovement(&win, &camera);
+        reactToCameraMovement(&win, &camera, &duck);
         
         float dt = tim.dt();
         time += dt;
@@ -122,12 +180,14 @@ void mainLoop() {
 
         sky.draw(&core, &camera, dt);
 
-        cubes->draw(&core, &camera);
+        darktDirtCubes->draw(&core, &camera);
+        lightDirtCubes->draw(&core, &camera);
+        grassCubes->draw(&core, &camera);
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
 
         duck.updateAnimation(&win, dt);
 
-        for (auto cubeWorldMatrix : worldPositions) {
+        for (auto cubeWorldMatrix : allCubesPositions) {
             bool isColidingX = duck.checkCollisionX(&cubeWorldMatrix, 2);
             if (isColidingX) {
                 duck.blockMovementX();
