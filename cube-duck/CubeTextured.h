@@ -21,8 +21,11 @@ public:
     BRDFLightCB* lightCB;
     Texture *texture;
     std::string textureName;
+    std::string filename;
 
-    CubeTextured(ShaderManager* sm, Core* core) : GEMObject(sm, core, CUBE_MODEL_FILE) {}
+    CubeTextured(ShaderManager* sm, Core* core, std::string _filename = CUBE_MODEL_FILE) : GEMObject(sm, core, _filename) {
+        filename = _filename;
+    }
 
     void init(Core* core, std::vector<Matrix> worldPositions, BRDFLightCB* light, std::string textureFilename) {
         VertexDefaultShaderCB *vertexShader = new VertexDefaultShaderCB();
@@ -33,7 +36,7 @@ public:
         lightCB = light;
 
         // Build geometry
-        staticMesh.load(CUBE_MODEL_FILE, worldPositions);
+        staticMesh.load(filename, worldPositions);
 
         // Load texture
         textureName = textureFilename;
@@ -42,7 +45,7 @@ public:
 
         Shader* vShader = shaderManager->getVertexShader(VERTEX_SHADER, vertexShaderCB);
         Shader* pShader = shaderManager->getPixelShader(PIXEL_SHADER, lightCB);
-        psos.createPSO(core, CUBE_MODEL_FILE, vShader->shaderBlob, pShader->shaderBlob, vertexLayoutCache.getStaticLayout());
+        psos.createPSO(core, filename, vShader->shaderBlob, pShader->shaderBlob, vertexLayoutCache.getStaticLayout());
     }
 
     void updateConstantsPixelShader(Core* core) {
@@ -62,7 +65,7 @@ public:
 
     void draw(Core* core, Camera* camera) {
         // 1. Bind PSO FIRST
-        psos.bind(core, CUBE_MODEL_FILE);
+        psos.bind(core, filename);
 
         updateFromCamera(core, camera);
 

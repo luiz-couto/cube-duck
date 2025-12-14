@@ -93,11 +93,11 @@ void generateGrassPositionsFromGrassCubes(std::vector<Matrix> &grassCubesPositio
         float j = cubeWorld.m[11] / 2;
 
         for (int g = 0; g < factor; g++) {
-            float minX = (i*2) - 0.8;
-            float maxX = (i*2) + 0.8;
+            float minX = (i*2) - 0.92;
+            float maxX = (i*2) + 0.92;
 
-            float minZ = (j*2) - 0.8;
-            float maxZ = (j*2) + 0.8;
+            float minZ = (j*2) - 0.92;
+            float maxZ = (j*2) + 0.92;
 
             float x = generateRandomFloat(minX, maxX);
             float z = generateRandomFloat(minZ, maxZ);
@@ -164,12 +164,22 @@ void mainLoop() {
     generateCubesPositions(Vec3(0, 4, -10), 1, 1, 2, grassCubesPositions);
 
     generateGrassPositionsFromGrassCubes(grassCubesPositions, grassPositions, 50);
-    generateGrassPositionsFromGrassCubes(lightDirtWithGrassPositions, grassPositions, 30);
+    generateGrassPositionsFromGrassCubes(lightDirtWithGrassPositions, grassPositions, 10);
+
+    Matrix pilar1;
+    pilar1 = pilar1.setTranslation(Vec3(4.0f, 13.7f, -6.0f)).mul(pilar1.setScaling(Vec3(0.6,0.6,0.6)));
+    std::vector<Matrix> pilarPos = {pilar1};
+
+    Matrix pilarBrokenM;
+    pilarBrokenM = pilarBrokenM.setTranslation(Vec3(4.0f, 13.7f, 0.0f)).mul(pilarBrokenM.setScaling(Vec3(0.6,0.6,0.6)));
+    std::vector<Matrix> pilarBrokenPos = {pilarBrokenM};
 
     append(lightDirtPositions, lightDirtWithGrassPositions);
     append(allCubesPositions, lightDirtPositions);
     append(allCubesPositions, darkDirtPositions);
     append(allCubesPositions, grassCubesPositions);
+    append(allCubesPositions, pilarPos);
+    append(allCubesPositions, pilarBrokenPos);
 
     BRDFLightCB light;
     light.lightColor = Vec3(1.0, 1.0, 1.0);
@@ -187,6 +197,12 @@ void mainLoop() {
     Duck duck(shaderManager, &core, Vec3(8.0f, 16.0f, -3.0f));
     Grass* grass = Grass::createGrass(shaderManager, &core, grassPositions, &duck.vsCBAnimatedModel.W);
 
+    CubeTextured* pilar = new CubeTextured(shaderManager, &core, "models/pilar.gem");
+    pilar->init(&core, pilarPos, &light, "models/textures/metal_color.png");
+
+    CubeTextured* pilarBroken = new CubeTextured(shaderManager, &core, "models/pilar_broken.gem");
+    pilarBroken->init(&core, pilarBrokenPos, &light, "models/textures/metal_color.png");
+    
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
 
@@ -212,6 +228,8 @@ void mainLoop() {
 
         darktDirtCubes->draw(&core, &camera);
         lightDirtCubes->draw(&core, &camera);
+        pilar->draw(&core, &camera);
+        pilarBroken->draw(&core, &camera);
         grassCubes->draw(&core, &camera);
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
 
