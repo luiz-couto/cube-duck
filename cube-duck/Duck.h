@@ -12,7 +12,7 @@
 #define WALK_VELOCITY 0.02f
 #define LOADING_FRAME 11
 #define DUCK_BOX_SIZE 1.5
-#define JUMP_HEIGHT 3.5f
+#define JUMP_HEIGHT 4.5f
 #define JUMP_INCREMENT 0.13f
 #define GRAVITY_PULL 0.05f
 

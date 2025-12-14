@@ -10,11 +10,11 @@
 #include "Texture.h"
 #include "Light.h"
 
-#define CUBE_MODEL_FILE "models/cube_2.gem"
+#define CUBE_MODEL_FILE "models/cube_5.gem"
 #define VERTEX_SHADER "shaders/vertex/VertexShaderLightTexture.hlsl"
 #define PIXEL_SHADER "shaders/pixel/PixelShaderLightTexture.hlsl"
 
-#define BRICK_TEXTURE "models/textures/T_Animalstextures_nh.png"
+#define BRICK_TEXTURE "models/textures/metal_color.png"
 
 class CubeTextured : public GEMObject {
 public:

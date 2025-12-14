@@ -8,7 +8,7 @@
 #include "Camera.h"
 #include "GEMObject.h"
 
-#define CUBE_MODEL "models/cube_2.gem"
+#define CUBE_MODEL "models/cube_5.gem"
 
 struct CubePixelShaderCB {
     Vec3 topColor;

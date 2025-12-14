@@ -24,6 +24,14 @@ float generateRandomFloat(float min, float max) {
     return dist(mt);
 }
 
+int generateRandomInt(int min, int max) {
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_int_distribution<int> dist(min, max);
+
+    return dist(mt);
+}
+
 // Create Pipeline Manager to access many strcuts
 
 void reactToCameraMovement(Window *win, Camera *camera, Duck *duck) {
@@ -58,11 +66,19 @@ void generateCubesPositions(Vec3 startPos, int numCubesY, int numCubesX, int num
     for (int y = 0; y < numCubesY; y++ ) {
         for (int x = 0; x < numCubesX; x++) {
             for (int z = 0; z < numCubesZ; z++) {
-                Matrix world;
-                float posX = startPos.x + (x * 2);
-                float posY = startPos.y + (y * 2);
-                float posZ = startPos.z + (z * 2);
-                world = world.setTranslation(Vec3(posX, posY, posZ));
+                Matrix world, translation, rotation;
+                float posX = startPos.x + (x * 1.95);
+                float posY = startPos.y + (y * 1.95);
+                float posZ = startPos.z + (z * 1.95);
+                translation = translation.setTranslation(Vec3(posX, posY - 0.15, posZ));
+
+                // SET RANDOM ROTAION BETWEEN 0, 90, 180, 270 DEGREES
+                float possibleRotations[4] = {0.0f, 90.0f, 180.0f, 270.0f};
+                int randomRotationIndex = static_cast<int>(generateRandomInt(0, 3));
+                float rotationAngle = possibleRotations[randomRotationIndex];
+                rotation.setRotationY(rotationAngle);
+                
+                world = translation.mul(rotation);
                 cubesPositions.push_back(world);
             }
         }
@@ -124,7 +140,7 @@ void mainLoop() {
     // pilar
     generateCubesPositions(Vec3(4, 6, -4), 3, 1, 2, lightDirtPositions);
     generateCubesPositions(Vec3(8, 6, -4), 3, 1, 2, lightDirtPositions);
-    generateCubesPositions(Vec3(4, 12, -6), 1, 3, 4, grassCubesPositions);
+    generateCubesPositions(Vec3(4, 12, -6), 1, 3, 4, lightDirtPositions);
 
     // bridge
     generateCubesPositions(Vec3(-10, 12, -4), 1, 7, 2, lightDirtPositions);
@@ -155,7 +171,7 @@ void mainLoop() {
     BRDFLightCB light;
     light.lightColor = Vec3(1.0, 1.0, 1.0);
     light.lightDirection = Vec3(0.4, 1.0, 0.3);
-    light.lightStrength = 0.7f;
+    light.lightStrength = 3.0f;
 
     BRDFLightCB lightGrass = light;
     lightGrass.lightColor = Vec3(0.2, 1.0, 0.2);

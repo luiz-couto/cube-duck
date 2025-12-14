@@ -26,7 +26,7 @@ float4 PS(PS_INPUT input) : SV_Target0 {
     float NdotL = max(dot(normal, lightDir), 0.0);  // max(ω_i · N, 0)
     float3 diffuseBRDF = (albedo / 3.14159) * lightColor * NdotL;
 
-    float3 ambient = albedo * 0.2;  // Ambient light to prevent pure black
+    float3 ambient = albedo * 0.4;  // Ambient light to prevent pure black
     float3 finalColor = ambient + diffuseBRDF;
 
     return float4(finalColor, 1.0);
