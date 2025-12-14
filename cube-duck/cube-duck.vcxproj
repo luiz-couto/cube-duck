@@ -145,6 +145,8 @@
     <ClInclude Include="GEMLoader.h" />
     <ClInclude Include="GEMObject.h" />
     <ClInclude Include="Grass.h" />
+    <ClInclude Include="GrassLight.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="PSOManager.h" />

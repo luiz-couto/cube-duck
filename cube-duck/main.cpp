@@ -12,6 +12,7 @@
 #include "Duck.h"
 #include "SkyDome.h"
 #include "Grass.h"
+//#include "GrassLight.h"
 #include "CubeTextured.h"
 #include <random>
 
@@ -75,7 +76,7 @@ void generateGrassPositionsFromGrassCubes(std::vector<Matrix> &grassCubesPositio
         float y = cubeWorld.m[7] / 1.5f;
         float j = cubeWorld.m[11] / 2;
 
-        for (int g = 0; g < 30; g++) {
+        for (int g = 0; g < 50; g++) {
             float minX = (i*2) - 0.9;
             float maxX = (i*2) + 0.9;
 
@@ -155,6 +156,10 @@ void mainLoop() {
     light.lightColor = Vec3(1.0, 1.0, 1.0);
     light.lightDirection = Vec3(0.4, 1.0, 0.3);
     light.lightStrength = 0.7f;
+
+    BRDFLightCB lightGrass = light;
+    lightGrass.lightColor = Vec3(0.2, 1.0, 0.2);
+    lightGrass.lightStrength = 5.0f;
 
     Cube* grassCubes = Cube::createGrassCube(shaderManager, &core, grassCubesPositions);
     CubeTextured* lightDirtCubes = CubeTextured::createBrickCubes(shaderManager, &core, lightDirtPositions, &light);
