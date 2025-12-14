@@ -174,12 +174,18 @@ void mainLoop() {
     pilarBrokenM = pilarBrokenM.setTranslation(Vec3(4.0f, 13.7f, 0.0f)).mul(pilarBrokenM.setScaling(Vec3(0.6,0.6,0.6)));
     std::vector<Matrix> pilarBrokenPos = {pilarBrokenM};
 
+    Matrix palmTreeM, rotationM;
+    rotationM.setRotationY(180);
+    palmTreeM = palmTreeM.setTranslation(Vec3(2.0f, 5.7f, 7.5f)).mul(rotationM);
+    std::vector<Matrix> palmTreePos = {palmTreeM};
+
     append(lightDirtPositions, lightDirtWithGrassPositions);
     append(allCubesPositions, lightDirtPositions);
     append(allCubesPositions, darkDirtPositions);
     append(allCubesPositions, grassCubesPositions);
     append(allCubesPositions, pilarPos);
     append(allCubesPositions, pilarBrokenPos);
+    append(allCubesPositions, palmTreePos);
 
     BRDFLightCB light;
     light.lightColor = Vec3(1.0, 1.0, 1.0);
@@ -202,6 +208,9 @@ void mainLoop() {
 
     CubeTextured* pilarBroken = new CubeTextured(shaderManager, &core, "models/pilar_broken.gem");
     pilarBroken->init(&core, pilarBrokenPos, &light, "models/textures/metal_color.png");
+
+    CubeTextured* palmTree = new CubeTextured(shaderManager, &core, "models/palm_tree.gem");
+    palmTree->init(&core, palmTreePos, &light, "models/textures/ColorPalette2.png");
     
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -230,6 +239,7 @@ void mainLoop() {
         lightDirtCubes->draw(&core, &camera);
         pilar->draw(&core, &camera);
         pilarBroken->draw(&core, &camera);
+        palmTree->draw(&core, &camera);
         grassCubes->draw(&core, &camera);
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
 
