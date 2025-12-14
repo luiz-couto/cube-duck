@@ -85,19 +85,19 @@ void generateCubesPositions(Vec3 startPos, int numCubesY, int numCubesX, int num
     }
 }
 
-void generateGrassPositionsFromGrassCubes(std::vector<Matrix> &grassCubesPositions, std::vector<Matrix> &grassPositions) {
+void generateGrassPositionsFromGrassCubes(std::vector<Matrix> &grassCubesPositions, std::vector<Matrix> &grassPositions, int factor) {
     for (const Matrix &cubeWorld : grassCubesPositions) {
         Matrix grassWorld;
         float i = cubeWorld.m[3] / 2;
         float y = cubeWorld.m[7] / 1.5f;
         float j = cubeWorld.m[11] / 2;
 
-        for (int g = 0; g < 50; g++) {
-            float minX = (i*2) - 0.9;
-            float maxX = (i*2) + 0.9;
+        for (int g = 0; g < factor; g++) {
+            float minX = (i*2) - 0.8;
+            float maxX = (i*2) + 0.8;
 
-            float minZ = (j*2) - 0.9;
-            float maxZ = (j*2) + 0.9;
+            float minZ = (j*2) - 0.8;
+            float maxZ = (j*2) + 0.8;
 
             float x = generateRandomFloat(minX, maxX);
             float z = generateRandomFloat(minZ, maxZ);
@@ -127,6 +127,7 @@ void mainLoop() {
     sky.init(&core);
 
     std::vector<Matrix> lightDirtPositions = {};
+    std::vector<Matrix> lightDirtWithGrassPositions = {};
     std::vector<Matrix> darkDirtPositions = {};
     std::vector<Matrix> grassCubesPositions = {};
     std::vector<Matrix> grassPositions = {};
@@ -138,8 +139,8 @@ void mainLoop() {
     generateCubesPositions(Vec3(4, 4, -10), 1, 3, 10, grassCubesPositions);
     
     // pilar
-    generateCubesPositions(Vec3(4, 6, -4), 3, 1, 2, lightDirtPositions);
-    generateCubesPositions(Vec3(8, 6, -4), 3, 1, 2, lightDirtPositions);
+    generateCubesPositions(Vec3(4, 6, -4), 3, 1, 2, lightDirtWithGrassPositions);
+    generateCubesPositions(Vec3(8, 6, -4), 3, 1, 2, lightDirtWithGrassPositions);
     generateCubesPositions(Vec3(4, 12, -6), 1, 3, 4, lightDirtPositions);
 
     // bridge
@@ -152,7 +153,7 @@ void mainLoop() {
 
     // left tunnel
     generateCubesPositions(Vec3(-8, 6, -6), 2, 2, 6, lightDirtPositions);
-    generateCubesPositions(Vec3(-4, 6, -6), 3, 1, 7, lightDirtPositions);
+    generateCubesPositions(Vec3(-4, 6, -6), 3, 1, 7, lightDirtWithGrassPositions);
     generateCubesPositions(Vec3(-10, 6, -10), 4, 4, 1, lightDirtPositions);
     generateCubesPositions(Vec3(-10, 10, -8), 2, 1, 2, lightDirtPositions);
     generateCubesPositions(Vec3(-4, 10, -8), 1, 1, 1, lightDirtPositions);
@@ -162,8 +163,10 @@ void mainLoop() {
     // grass stand
     generateCubesPositions(Vec3(0, 4, -10), 1, 1, 2, grassCubesPositions);
 
-    generateGrassPositionsFromGrassCubes(grassCubesPositions, grassPositions);
+    generateGrassPositionsFromGrassCubes(grassCubesPositions, grassPositions, 50);
+    generateGrassPositionsFromGrassCubes(lightDirtWithGrassPositions, grassPositions, 30);
 
+    append(lightDirtPositions, lightDirtWithGrassPositions);
     append(allCubesPositions, lightDirtPositions);
     append(allCubesPositions, darkDirtPositions);
     append(allCubesPositions, grassCubesPositions);
