@@ -8,12 +8,12 @@
 #include "Window.h"
 
 #define DUCK_MODEL_FILE "models/Duck-white.gem"
-#define RUN_VELOCITY 0.05f
+#define RUN_VELOCITY 0.04f
 #define WALK_VELOCITY 0.02f
 #define LOADING_FRAME 11
 #define DUCK_BOX_SIZE 1.5
-#define JUMP_HEIGHT 3.0f
-#define JUMP_INCREMENT 0.15f
+#define JUMP_HEIGHT 3.5f
+#define JUMP_INCREMENT 0.13f
 #define GRAVITY_PULL 0.05f
 
 enum DUCK_ANIMATION {
