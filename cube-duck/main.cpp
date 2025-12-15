@@ -185,6 +185,14 @@ void mainLoop() {
     waterPlaneM = waterPlaneM.setTranslation(Vec3(0.0f, 5.0f, -1.2f)).mul(waterPlaneM.setScaling(Vec3(1.0,1.0,0.85)));
     std::vector<Matrix> waterPlanePos = {waterPlaneM};
 
+    Matrix rail1, rail2, rail3, rail4;
+    //rotationM.setRotationY(180);
+    rail1 = rail1.setTranslation(Vec3(-1.5f, 4.0f, 8.2f)).mul(rail1.setScaling(Vec3(1.0, 1.2, 1.5)));
+    rail2 = rail2.setTranslation(Vec3(1.5f, 4.0f, 8.2f)).mul(rail2.setScaling(Vec3(1.0, 1.2, 1.5)));
+    rail3 = rail3.setTranslation(Vec3(-1.5f, 4.0f, -10.65f)).mul(rail3.setScaling(Vec3(1.0, 1.2, 1.5)));
+    rail4 = rail4.setTranslation(Vec3(1.5f, 4.0f, -10.65f)).mul(rail4.setScaling(Vec3(1.0, 1.2, 1.5)));
+    std::vector<Matrix> railsPos = {rail1, rail2, rail3, rail4};
+
     append(lightDirtPositions, lightDirtWithGrassPositions);
     append(allCubesPositions, lightDirtPositions);
     append(allCubesPositions, darkDirtPositions);
@@ -192,6 +200,7 @@ void mainLoop() {
     append(allCubesPositions, pilarPos);
     append(allCubesPositions, pilarBrokenPos);
     append(allCubesPositions, palmTreePos);
+    append(allCubesPositions, railsPos);
 
     BRDFLightCB light;
     light.lightColor = Vec3(1.0, 1.0, 1.0);
@@ -217,10 +226,13 @@ void mainLoop() {
 
     CubeTextured* palmTree = new CubeTextured(shaderManager, &core, "models/palm_tree.gem");
     palmTree->init(&core, palmTreePos, &light, "models/textures/ColorPalette2.png");
+
+    CubeTextured* rails = new CubeTextured(shaderManager, &core, "models/rail.gem");
+    rails->init(&core, railsPos, &light, "models/textures/ColorPalette2.png");
     
     BRDFLightCB lightWater = light;
     lightWater.lightColor = Vec3(0.4, 0.4, 0.6);
-    lightWater.lightStrength = 8.0f;
+    lightWater.lightStrength = 12.0f;
 
     Water *water = Water::createWater(shaderManager, &core, waterPlanePos, &lightWater);
     
@@ -254,6 +266,7 @@ void mainLoop() {
         palmTree->draw(&core, &camera);
         grassCubes->draw(&core, &camera);
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
+        rails->draw(&core, &camera);
         
         duck.updateAnimation(&win, dt);
         water->draw(&core, &camera, dt);
