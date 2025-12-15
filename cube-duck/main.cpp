@@ -182,7 +182,7 @@ void mainLoop() {
 
     Matrix waterPlaneM;
     //rotationM.setRotationY(180);
-    waterPlaneM = waterPlaneM.setTranslation(Vec3(0.0f, 5.0f, -2.0f));
+    waterPlaneM = waterPlaneM.setTranslation(Vec3(0.0f, 5.0f, -1.2f)).mul(waterPlaneM.setScaling(Vec3(1.0,1.0,0.85)));
     std::vector<Matrix> waterPlanePos = {waterPlaneM};
 
     append(lightDirtPositions, lightDirtWithGrassPositions);
@@ -256,7 +256,7 @@ void mainLoop() {
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
         
         duck.updateAnimation(&win, dt);
-        water->draw(&core, &camera);
+        water->draw(&core, &camera, dt);
 
         for (auto cubeWorldMatrix : allCubesPositions) {
             bool isColidingX = duck.checkCollisionX(&cubeWorldMatrix, 2);

@@ -30,7 +30,7 @@ float4 PS(PS_INPUT input) : SV_Target0 {
     float3 finalColor = ambient + diffuseBRDF;
 
     // Alpha value for transparency (0.0 = fully transparent, 1.0 = opaque)
-    float alpha = 0.8;  // Adjust this value for more/less transparency
+    float alpha = 0.65;  // Adjust this value for more/less transparency
     
     return float4(finalColor, alpha);
 }

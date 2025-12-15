@@ -16,9 +16,16 @@
 
 #define WATER_TEXTURE "models/textures/sea_water.png"
 
+struct WaterVertexShaderCB {
+    Matrix W;
+    Matrix VP;
+    float timeDt;
+};
+
 class Water : public GEMObject {
 public:
     BRDFLightCB* lightCB;
+    WaterVertexShaderCB* vertexShaderCB;
     Texture *texture;
     std::string textureName;
     std::string filename;
@@ -28,9 +35,10 @@ public:
     }
 
     void init(Core* core, std::vector<Matrix> worldPositions, BRDFLightCB* light, std::string textureFilename) {
-        VertexDefaultShaderCB *vertexShader = new VertexDefaultShaderCB();
+        WaterVertexShaderCB *vertexShader = new WaterVertexShaderCB();
         vertexShader->W.setIdentity();
         vertexShader->VP.setIdentity();
+        vertexShader->timeDt = 0.0f;
         vertexShaderCB = vertexShader;
 
         lightCB = light;
@@ -59,11 +67,24 @@ public:
     void updateConstantsVertexShader(Core* core) {
         shaderManager->updateConstant(WATER_VERTEX_SHADER, "W", &vertexShaderCB->W);
         shaderManager->updateConstant(WATER_VERTEX_SHADER, "VP", &vertexShaderCB->VP);
+        shaderManager->updateConstant(WATER_VERTEX_SHADER, "time", &vertexShaderCB->timeDt);
 
         shaderManager->getVertexShader(WATER_VERTEX_SHADER, vertexShaderCB)->apply(core);
     }
 
-    void draw(Core* core, Camera* camera) {
+    void updateFromCamera(Core* core, Camera* camera) {
+        Matrix viewMatrix;
+        viewMatrix.setLookatMatrix(camera->from, camera->to, camera->up);
+
+        Matrix projectionMatrix;
+        projectionMatrix.setProjectionMatrix(ZFAR, ZNEAR, FOV, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        vertexShaderCB->VP = projectionMatrix.mul(viewMatrix);
+    }
+
+    void draw(Core* core, Camera* camera, float dt) {
+        vertexShaderCB->timeDt += dt;
+
         // 1. Bind PSO FIRST
         psos.bind(core, filename);
 
