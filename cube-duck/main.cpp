@@ -15,6 +15,7 @@
 //#include "GrassLight.h"
 #include "CubeTextured.h"
 #include <random>
+#include "Water.h"
 
 float generateRandomFloat(float min, float max) {
     std::random_device rd;
@@ -179,6 +180,11 @@ void mainLoop() {
     palmTreeM = palmTreeM.setTranslation(Vec3(2.0f, 5.7f, 7.5f)).mul(rotationM);
     std::vector<Matrix> palmTreePos = {palmTreeM};
 
+    Matrix waterPlaneM;
+    //rotationM.setRotationY(180);
+    waterPlaneM = waterPlaneM.setTranslation(Vec3(0.0f, 5.0f, -2.0f));
+    std::vector<Matrix> waterPlanePos = {waterPlaneM};
+
     append(lightDirtPositions, lightDirtWithGrassPositions);
     append(allCubesPositions, lightDirtPositions);
     append(allCubesPositions, darkDirtPositions);
@@ -212,6 +218,12 @@ void mainLoop() {
     CubeTextured* palmTree = new CubeTextured(shaderManager, &core, "models/palm_tree.gem");
     palmTree->init(&core, palmTreePos, &light, "models/textures/ColorPalette2.png");
     
+    BRDFLightCB lightWater = light;
+    lightWater.lightColor = Vec3(0.4, 0.4, 0.6);
+    lightWater.lightStrength = 8.0f;
+
+    Water *water = Water::createWater(shaderManager, &core, waterPlanePos, &lightWater);
+    
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
 
@@ -242,8 +254,9 @@ void mainLoop() {
         palmTree->draw(&core, &camera);
         grassCubes->draw(&core, &camera);
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
-
+        
         duck.updateAnimation(&win, dt);
+        water->draw(&core, &camera);
 
         for (auto cubeWorldMatrix : allCubesPositions) {
             bool isColidingX = duck.checkCollisionX(&cubeWorldMatrix, 2);
