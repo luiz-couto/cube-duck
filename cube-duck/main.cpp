@@ -16,6 +16,7 @@
 #include "CubeTextured.h"
 #include <random>
 #include "Water.h"
+#include "Enemy.h"
 
 float generateRandomFloat(float min, float max) {
     std::random_device rd;
@@ -235,6 +236,9 @@ void mainLoop() {
     lightWater.lightStrength = 12.0f;
 
     Water *water = Water::createWater(shaderManager, &core, waterPlanePos, &lightWater);
+
+    // enemies
+    Enemy bull(shaderManager, &core, Vec3(-10.0f, 14.0f, 6.0f), Vec3(-4.0f, 14.0f, 6.0f), ALONG_X);
     
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -269,7 +273,7 @@ void mainLoop() {
         rails->draw(&core, &camera);
         
         duck.updateAnimation(&win, dt);
-        water->draw(&core, &camera, dt);
+        bull.updateAnimation(&win, dt);
 
         for (auto cubeWorldMatrix : allCubesPositions) {
             bool isColidingX = duck.checkCollisionX(&cubeWorldMatrix, 2);
@@ -291,6 +295,9 @@ void mainLoop() {
         }
 
         duck.draw(&camera);
+        bull.draw(&camera);
+        
+        water->draw(&core, &camera, dt);
 
         core.finishFrame();
     }

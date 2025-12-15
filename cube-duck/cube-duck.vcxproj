@@ -139,6 +139,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeTextured.h" />
     <ClInclude Include="Duck.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fence.h" />
     <ClInclude Include="GamesEngineeringBase.h" />
     <ClInclude Include="GEMAnimatedObject.h" />
