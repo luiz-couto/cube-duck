@@ -194,6 +194,10 @@ void mainLoop() {
     rail4 = rail4.setTranslation(Vec3(1.5f, 4.0f, -10.65f)).mul(rail4.setScaling(Vec3(1.0, 1.2, 1.5)));
     std::vector<Matrix> railsPos = {rail1, rail2, rail3, rail4};
 
+    Matrix coinM;
+    coinM = coinM.setTranslation(Vec3(8.0f, 6.5f, 7.5f)).mul(coinM.setScaling(Vec3(0.015, 0.015, 0.015)));
+    std::vector<Matrix> coinsPos = {coinM};
+
     append(lightDirtPositions, lightDirtWithGrassPositions);
     append(allCubesPositions, lightDirtPositions);
     append(allCubesPositions, darkDirtPositions);
@@ -211,6 +215,10 @@ void mainLoop() {
     BRDFLightCB lightGrass = light;
     lightGrass.lightColor = Vec3(0.2, 1.0, 0.2);
     lightGrass.lightStrength = 5.0f;
+
+    BRDFLightCB lightCoin = light;
+    lightCoin.lightColor = Vec3(1.0, 0.9, 0.2);
+    lightCoin.lightStrength = 30.0f;
 
     Cube* grassCubes = Cube::createGrassCube(shaderManager, &core, grassCubesPositions);
     CubeTextured* lightDirtCubes = CubeTextured::createBrickCubes(shaderManager, &core, lightDirtPositions, &light);
@@ -243,6 +251,10 @@ void mainLoop() {
     Enemy cat1(shaderManager, &core, Vec3(-10.0f, 6.0f, -2.0f), Vec3(-10.0f, 6.0f, -2.0f), ALONG_Z, 180, CAT_SIAMESE_MODEL_FILE, 0.05, E_ATTACK);
     Enemy cat2(shaderManager, &core, Vec3(6.0f, 6.2f, 8.0f), Vec3(6.0f, 6.2f, 0.0f), ALONG_Z, 0, CAT_MODEL_FILE, 0.04, E_WALK_FORWARD, 0.15f);
     
+    // coins
+    CubeTextured* coins = new CubeTextured(shaderManager, &core, "models/coin.gem");
+    coins->init(&core, coinsPos, &lightCoin, "models/textures/Coin2_BaseColor.png");
+
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
 
@@ -274,6 +286,7 @@ void mainLoop() {
         grassCubes->draw(&core, &camera);
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
         rails->draw(&core, &camera);
+        coins->draw(&core, &camera);
         
         duck.updateAnimation(&win, dt);
         bull.updateAnimation(&win, dt);
