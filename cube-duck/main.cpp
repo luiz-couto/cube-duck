@@ -238,8 +238,10 @@ void mainLoop() {
     Water *water = Water::createWater(shaderManager, &core, waterPlanePos, &lightWater);
 
     // enemies
-    Enemy bull(shaderManager, &core, Vec3(-10.0f, 14.0f, 6.0f), Vec3(-4.0f, 14.0f, 6.0f), ALONG_X, -90);
-    Enemy bull2(shaderManager, &core, Vec3(-4.0f, 14.0f, 1.0f), Vec3(-10.0f, 14.0f, 1.0f), ALONG_X, 90);
+    Enemy bull(shaderManager, &core, Vec3(-10.0f, 14.0f, 6.0f), Vec3(-4.0f, 14.0f, 6.0f), ALONG_X, -90, BULL_MODEL_FILE, 0.015, E_WALK_FORWARD);
+    Enemy bull2(shaderManager, &core, Vec3(-4.0f, 14.0f, 1.0f), Vec3(-10.0f, 14.0f, 1.0f), ALONG_X, 90, BULL_MODEL_FILE, 0.015, E_WALK_FORWARD);
+    Enemy cat1(shaderManager, &core, Vec3(-10.0f, 6.0f, -2.0f), Vec3(-10.0f, 6.0f, -2.0f), ALONG_Z, 180, CAT_SIAMESE_MODEL_FILE, 0.05, E_ATTACK);
+    Enemy cat2(shaderManager, &core, Vec3(6.0f, 6.2f, 8.0f), Vec3(6.0f, 6.2f, 0.0f), ALONG_Z, 0, CAT_MODEL_FILE, 0.04, E_WALK_FORWARD, 0.15f);
     
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -276,6 +278,8 @@ void mainLoop() {
         duck.updateAnimation(&win, dt);
         bull.updateAnimation(&win, dt);
         bull2.updateAnimation(&win, dt);
+        cat1.updateAnimation(&win, dt);
+        cat2.updateAnimation(&win, dt);
 
         for (auto cubeWorldMatrix : allCubesPositions) {
             bool isColidingX = duck.checkCollisionX(&cubeWorldMatrix, 2);
@@ -299,7 +303,9 @@ void mainLoop() {
         duck.draw(&camera);
         bull.draw(&camera);
         bull2.draw(&camera);
-        
+        cat1.draw(&camera);
+        cat2.draw(&camera);
+
         water->draw(&core, &camera, dt);
 
         core.finishFrame();

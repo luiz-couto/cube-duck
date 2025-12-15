@@ -7,9 +7,12 @@
 #include "Camera.h"
 #include "Window.h"
 
-#define ENEMY_MODEL_FILE "models/Bull-white.gem"
-#define E_WALK_VELOCITY 0.08f
-#define E_LOADING_FRAME 11
+#define BULL_MODEL_FILE "models/Bull-white.gem"
+#define CAT_MODEL_FILE "models/Cat-Orange.gem"
+#define CAT_DARK_MODEL_FILE "models/Cat-Dark.gem"
+#define CAT_SIAMESE_MODEL_FILE "models/Cat-Siamese.gem"
+#define E_WALK_VELOCITY 0.09f
+#define E_LOADING_FRAME 3
 #define E_ENEMY_BOX_SIZE 1.5
 
 enum ENEMY_ANIMATION {
@@ -51,18 +54,20 @@ public:
     Vec3 startPosition;
     Vec3 endPosition;
     MOVE_KIND moveKind;
+    float walkVelocity;
 
-    Enemy(ShaderManager *_sm, Core *_core, Vec3 _startPosition, Vec3 _endPosition, MOVE_KIND _moveKind, float _rotationAngle): 
+    Enemy(ShaderManager *_sm, Core *_core, Vec3 _startPosition, Vec3 _endPosition, MOVE_KIND _moveKind, float _rotationAngle, std::string enemyFile, float _scale, ENEMY_ANIMATION animation, float _walkVelocity = E_WALK_VELOCITY): 
         sm(_sm), core(_core), position(_startPosition), startPosition(_startPosition), 
-        endPosition(_endPosition), moveKind(_moveKind), rotationAngle(_rotationAngle), enemyModel(sm, ENEMY_MODEL_FILE) 
+        endPosition(_endPosition), moveKind(_moveKind), rotationAngle(_rotationAngle), 
+        walkVelocity(_walkVelocity), enemyModel(sm, enemyFile)
     {
         
         enemyModel.init(core, &vsCBAnimatedModel);
         animatedInstance.init(&enemyModel.animatedModel->animation, 0);
         memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
 
-        scale.setScaling(0.015f, 0.015f, 0.015f);
-        currentAnimation = E_WALK_FORWARD;
+        scale.setScaling(_scale, _scale, _scale);
+        currentAnimation = animation;
     }
 
     void resetPosition() {
@@ -79,26 +84,48 @@ public:
         }
 
         if (moveKind == ALONG_X && std::abs(position.x - endPosition.x) > 0.001) {
-            if (endPosition.x - startPosition.x < 0) position.x -= E_WALK_VELOCITY;
-            if (endPosition.x - startPosition.x >= 0) position.x += E_WALK_VELOCITY;
+            bool reached = false;
+            if (endPosition.x - position.x < 0) {
+                position.x -= walkVelocity;
+                if (position.x <= endPosition.x) {
+                    reached = true;
+                }
+            }
+            if (endPosition.x - position.x >= 0) {
+                position.x += walkVelocity;
+                if (position.x >= endPosition.x) {
+                    reached = true;
+                }
+            }
 
-            if (std::abs(position.x - endPosition.x) < 0.001) { // reached goal
+            if (reached) { // reached goal
                 Vec3 aux = startPosition;
                 startPosition = endPosition;
                 endPosition = aux;
-                rotationAngle = -rotationAngle;
+                rotationAngle = (rotationAngle + 180) % 360;
             }
         }
 
         if (moveKind == ALONG_Z && std::abs(position.z - endPosition.z) > 0.001) {
-            if (endPosition.z - startPosition.z < 0) position.z -= E_WALK_VELOCITY;
-            if (endPosition.z - startPosition.z >= 0) position.z += E_WALK_VELOCITY;
+            bool reached = false;
+            if (endPosition.z - position.z < 0) {
+                position.z -= walkVelocity;
+                if (position.z <= endPosition.z) {
+                    reached = true;
+                }
+            }
+            if (endPosition.z - position.z >= 0) {
+                position.z += walkVelocity;
+                if (position.z >= endPosition.z) {
+                    reached = true;
+                }
+            }
 
-            if (std::abs(position.z - endPosition.z) < 0.001) { // reached goal
+            if (reached) { // reached goal
                 Vec3 aux = startPosition;
                 startPosition = endPosition;
                 endPosition = aux;
-                rotationAngle = -rotationAngle;
+                rotationAngle = (rotationAngle + 180) % 360;
             }
         }        
     }
