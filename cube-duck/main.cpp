@@ -238,7 +238,8 @@ void mainLoop() {
     Water *water = Water::createWater(shaderManager, &core, waterPlanePos, &lightWater);
 
     // enemies
-    Enemy bull(shaderManager, &core, Vec3(-10.0f, 14.0f, 6.0f), Vec3(-4.0f, 14.0f, 6.0f), ALONG_X);
+    Enemy bull(shaderManager, &core, Vec3(-10.0f, 14.0f, 6.0f), Vec3(-4.0f, 14.0f, 6.0f), ALONG_X, -90);
+    Enemy bull2(shaderManager, &core, Vec3(-4.0f, 14.0f, 1.0f), Vec3(-10.0f, 14.0f, 1.0f), ALONG_X, 90);
     
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
@@ -274,6 +275,7 @@ void mainLoop() {
         
         duck.updateAnimation(&win, dt);
         bull.updateAnimation(&win, dt);
+        bull2.updateAnimation(&win, dt);
 
         for (auto cubeWorldMatrix : allCubesPositions) {
             bool isColidingX = duck.checkCollisionX(&cubeWorldMatrix, 2);
@@ -296,6 +298,7 @@ void mainLoop() {
 
         duck.draw(&camera);
         bull.draw(&camera);
+        bull2.draw(&camera);
         
         water->draw(&core, &camera, dt);
 

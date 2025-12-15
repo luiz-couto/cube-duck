@@ -52,9 +52,9 @@ public:
     Vec3 endPosition;
     MOVE_KIND moveKind;
 
-    Enemy(ShaderManager *_sm, Core *_core, Vec3 _startPosition, Vec3 _endPosition, MOVE_KIND _moveKind): 
+    Enemy(ShaderManager *_sm, Core *_core, Vec3 _startPosition, Vec3 _endPosition, MOVE_KIND _moveKind, float _rotationAngle): 
         sm(_sm), core(_core), position(_startPosition), startPosition(_startPosition), 
-        endPosition(_endPosition), moveKind(_moveKind), enemyModel(sm, ENEMY_MODEL_FILE) 
+        endPosition(_endPosition), moveKind(_moveKind), rotationAngle(_rotationAngle), enemyModel(sm, ENEMY_MODEL_FILE) 
     {
         
         enemyModel.init(core, &vsCBAnimatedModel);
@@ -62,7 +62,6 @@ public:
         memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
 
         scale.setScaling(0.015f, 0.015f, 0.015f);
-        rotationAngle = -90;
         currentAnimation = E_WALK_FORWARD;
     }
 
