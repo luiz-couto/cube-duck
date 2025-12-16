@@ -134,6 +134,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Barrier.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="ConstantBufferReflection.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Cube.h" />

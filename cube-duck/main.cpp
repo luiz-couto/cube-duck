@@ -17,6 +17,7 @@
 #include <random>
 #include "Water.h"
 #include "Enemy.h"
+#include "Coin.h"
 
 float generateRandomFloat(float min, float max) {
     std::random_device rd;
@@ -252,7 +253,8 @@ void mainLoop() {
     Enemy cat2(shaderManager, &core, Vec3(6.0f, 6.2f, 8.0f), Vec3(6.0f, 6.2f, 0.0f), ALONG_Z, 0, CAT_MODEL_FILE, 0.04, E_WALK_FORWARD, 0.15f);
     
     // coins
-    CubeTextured* coins = new CubeTextured(shaderManager, &core, "models/coin.gem");
+    CubeTextured* cubeTexturedCoins = new CubeTextured(shaderManager, &core, "models/coin.gem");
+    Coin* coins = new Coin(*cubeTexturedCoins);
     coins->init(&core, coinsPos, &lightCoin, "models/textures/Coin2_BaseColor.png");
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
@@ -286,7 +288,7 @@ void mainLoop() {
         grassCubes->draw(&core, &camera);
         grass->draw(&core, &camera, &duck.vsCBAnimatedModel.W);
         rails->draw(&core, &camera);
-        coins->draw(&core, &camera);
+        coins->draw(&core, &camera, time);
         
         duck.updateAnimation(&win, dt);
         bull.updateAnimation(&win, dt);
