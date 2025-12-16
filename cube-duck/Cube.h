@@ -23,7 +23,9 @@ public:
     CubePixelShaderCB* pixelShaderCB;
     Cube(ShaderManager* sm, Core* core, const std::string& filename) : GEMObject(sm, core, filename) {}
 
-    void init(Core* core, std::vector<Matrix> worldPositions, Vec3 topColor = Vec3(0.2, 1.0, 0.2), Vec3 bottomColor = Vec3(0.45, 0.2, 0.05), VertexDefaultShaderCB* vertexShader = nullptr, CubePixelShaderCB* pixelShader = nullptr) {
+    void init(Core* core, std::vector<Matrix> _worldPositions, Vec3 topColor = Vec3(0.2, 1.0, 0.2), Vec3 bottomColor = Vec3(0.45, 0.2, 0.05), VertexDefaultShaderCB* vertexShader = nullptr, CubePixelShaderCB* pixelShader = nullptr) {
+        worldPositions = _worldPositions;
+
         if (vertexShader == nullptr) {
             vertexShader = new VertexDefaultShaderCB();
             vertexShader->W.setIdentity();

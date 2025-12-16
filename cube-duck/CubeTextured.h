@@ -11,8 +11,8 @@
 #include "Light.h"
 
 #define CUBE_MODEL_FILE "models/cube_5.gem"
-#define VERTEX_SHADER "shaders/vertex/VertexShaderLightTexture.hlsl"
-#define PIXEL_SHADER "shaders/pixel/PixelShaderLightTexture.hlsl"
+#define CUBE_TEXTURED_VERTEX_SHADER "shaders/vertex/VertexShaderLightTexture.hlsl"
+#define CUBE_TEXTURED_PIXEL_SHADER "shaders/pixel/PixelShaderLightTexture.hlsl"
 
 #define BRICK_TEXTURE "models/textures/metal_color.png"
 
@@ -27,7 +27,9 @@ public:
         filename = _filename;
     }
 
-    void init(Core* core, std::vector<Matrix> worldPositions, BRDFLightCB* light, std::string textureFilename) {
+    void init(Core* core, std::vector<Matrix> _worldPositions, BRDFLightCB* light, std::string textureFilename) {
+        worldPositions = _worldPositions;
+
         VertexDefaultShaderCB *vertexShader = new VertexDefaultShaderCB();
         vertexShader->W.setIdentity();
         vertexShader->VP.setIdentity();
@@ -43,24 +45,24 @@ public:
         texture = new Texture();
         texture->load(core, textureName);
 
-        Shader* vShader = shaderManager->getVertexShader(VERTEX_SHADER, vertexShaderCB);
-        Shader* pShader = shaderManager->getPixelShader(PIXEL_SHADER, lightCB);
+        Shader* vShader = shaderManager->getVertexShader(CUBE_TEXTURED_VERTEX_SHADER, vertexShaderCB);
+        Shader* pShader = shaderManager->getPixelShader(CUBE_TEXTURED_PIXEL_SHADER, lightCB);
         psos.createPSO(core, filename, vShader->shaderBlob, pShader->shaderBlob, vertexLayoutCache.getStaticLayout());
     }
 
     void updateConstantsPixelShader(Core* core) {
-        shaderManager->updateConstant(PIXEL_SHADER, "LightColor", &lightCB->lightColor);
-        shaderManager->updateConstant(PIXEL_SHADER, "LightDirection", &lightCB->lightDirection);
-        shaderManager->updateConstant(PIXEL_SHADER, "LightStrength", &lightCB->lightStrength);
+        shaderManager->updateConstant(CUBE_TEXTURED_PIXEL_SHADER, "LightColor", &lightCB->lightColor);
+        shaderManager->updateConstant(CUBE_TEXTURED_PIXEL_SHADER, "LightDirection", &lightCB->lightDirection);
+        shaderManager->updateConstant(CUBE_TEXTURED_PIXEL_SHADER, "LightStrength", &lightCB->lightStrength);
 
-        shaderManager->getPixelShader(PIXEL_SHADER, lightCB)->apply(core);
+        shaderManager->getPixelShader(CUBE_TEXTURED_PIXEL_SHADER, lightCB)->apply(core);
     }
 
     void updateConstantsVertexShader(Core* core) {
-        shaderManager->updateConstant(VERTEX_SHADER, "W", &vertexShaderCB->W);
-        shaderManager->updateConstant(VERTEX_SHADER, "VP", &vertexShaderCB->VP);
+        shaderManager->updateConstant(CUBE_TEXTURED_VERTEX_SHADER, "W", &vertexShaderCB->W);
+        shaderManager->updateConstant(CUBE_TEXTURED_VERTEX_SHADER, "VP", &vertexShaderCB->VP);
 
-        shaderManager->getVertexShader(VERTEX_SHADER, vertexShaderCB)->apply(core);
+        shaderManager->getVertexShader(CUBE_TEXTURED_VERTEX_SHADER, vertexShaderCB)->apply(core);
     }
 
     void draw(Core* core, Camera* camera) {

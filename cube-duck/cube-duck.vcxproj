@@ -148,10 +148,12 @@
     <ClInclude Include="GEMObject.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GrassLight.h" />
+    <ClInclude Include="Level1.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="PSOManager.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SkyDome.h" />
     <ClInclude Include="StaticMesh.h" />

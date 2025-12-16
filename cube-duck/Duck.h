@@ -153,15 +153,15 @@ public:
     }
 
     bool checkBoxCollision(Vec3 axisPosition, Vec3 point, float size) {
-    float duckHalfX = 0.5f;  // Narrower on X
-    float duckHalfY = 0.5f;  // Full height on Y
-    float duckHalfZ = 0.5f;  // Full depth on Z
-    
-    bool overlapX = std::abs(axisPosition.x - point.x) < (duckHalfX + size / 2);
-    bool overlapY = std::abs(axisPosition.y - point.y) < (duckHalfY + size / 2);
-    bool overlapZ = std::abs(axisPosition.z - point.z) < (duckHalfZ + size / 2);
-    return overlapX && overlapY && overlapZ;
-}
+        float duckHalfX = 0.5f;
+        float duckHalfY = 0.5f;
+        float duckHalfZ = 0.5f;
+        
+        bool overlapX = std::abs(axisPosition.x - point.x) < (duckHalfX + size / 2);
+        bool overlapY = std::abs(axisPosition.y - point.y) < (duckHalfY + size / 2);
+        bool overlapZ = std::abs(axisPosition.z - point.z) < (duckHalfZ + size / 2);
+        return overlapX && overlapY && overlapZ;
+    }
 
     bool checkCollisionX(Matrix *worldMatrix, float size) {
         Vec3 axisPosition = Vec3(position.x, lastPosition.y, lastPosition.z);
