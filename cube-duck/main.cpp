@@ -253,9 +253,7 @@ void mainLoop() {
     Enemy cat2(shaderManager, &core, Vec3(6.0f, 6.2f, 8.0f), Vec3(6.0f, 6.2f, 0.0f), ALONG_Z, 0, CAT_MODEL_FILE, 0.04, E_WALK_FORWARD, 0.15f);
     
     // coins
-    CubeTextured* cubeTexturedCoins = new CubeTextured(shaderManager, &core, "models/coin.gem");
-    Coin* coins = new Coin(*cubeTexturedCoins);
-    coins->init(&core, coinsPos, &lightCoin, "models/textures/Coin2_BaseColor.png");
+    Coin* coins = Coin::createCoins(shaderManager, &core, coinsPos, &lightCoin);
 
     GamesEngineeringBase::Timer tim = GamesEngineeringBase::Timer();
     float time = 0.0f;
