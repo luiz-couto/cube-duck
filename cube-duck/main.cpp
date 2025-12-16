@@ -41,12 +41,14 @@ void reactToCameraMovement(Window *win, Camera *camera, Duck *duck) {
     float mouseOffsetY = win->lastmousey - win->mousey;
     float mouseOffsetX = win->lastmousex - win->mousex;
 
-    if (!win->mouseButtons[0] && std::abs(mouseOffsetY) > 0.00001f) {
+    if (win->mouseButtons[0] && std::abs(mouseOffsetY) > 0.00001f) {
+        camera->rotateZ(-mouseOffsetY * 0.01);
+    } else if (std::abs(mouseOffsetY) > 0.00001f) {
         camera->moveCameraY(mouseOffsetY * 0.01f);
     }
 
     if (win->mouseButtons[0] && std::abs(mouseOffsetX) > 0.00001f) {
-        camera->rotate(-mouseOffsetX * 0.01f);
+        camera->rotateY(-mouseOffsetX * 0.01f);
     } else if (std::abs(mouseOffsetX) > 0.00001f) {
         camera->moveCameraX(-mouseOffsetX * 0.01f);
     }

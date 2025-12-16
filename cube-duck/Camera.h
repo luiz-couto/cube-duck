@@ -48,7 +48,7 @@ class Camera {
         to = Vec3(to.x + toDeltaX, newTo.y, to.z + toDeltaZ);
     }
 
-    void rotate(float angle) {
+    void rotateY(float angle) {
         Vec3 offset = from - to;
         
         float cosA = cosf(angle);
@@ -57,6 +57,17 @@ class Camera {
         float newZ = offset.x * sinA + offset.z * cosA;
 
         from = Vec3(newX + to.x, from.y, newZ + to.z);
+    }
+
+    void rotateZ(float angle) {
+        Vec3 offset = from - to;
+        
+        float cosA = cosf(angle);
+        float sinA = sinf(angle);
+        float newX = offset.x * cosA - offset.y * sinA;
+        float newY = offset.x * sinA + offset.y * cosA;
+
+        from = Vec3(newX + to.x, newY + to.y, from.z);
     }
 
     void zoom(float delta) {
