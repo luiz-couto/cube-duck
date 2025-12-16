@@ -183,21 +183,27 @@ void mainLoop() {
     std::vector<Matrix> palmTreePos = {palmTreeM};
 
     Matrix waterPlaneM;
-    //rotationM.setRotationY(180);
     waterPlaneM = waterPlaneM.setTranslation(Vec3(0.0f, 5.0f, -1.2f)).mul(waterPlaneM.setScaling(Vec3(1.0,1.0,0.85)));
     std::vector<Matrix> waterPlanePos = {waterPlaneM};
 
     Matrix rail1, rail2, rail3, rail4;
-    //rotationM.setRotationY(180);
     rail1 = rail1.setTranslation(Vec3(-1.5f, 4.0f, 8.2f)).mul(rail1.setScaling(Vec3(1.0, 1.2, 1.5)));
     rail2 = rail2.setTranslation(Vec3(1.5f, 4.0f, 8.2f)).mul(rail2.setScaling(Vec3(1.0, 1.2, 1.5)));
     rail3 = rail3.setTranslation(Vec3(-1.5f, 4.0f, -10.65f)).mul(rail3.setScaling(Vec3(1.0, 1.2, 1.5)));
     rail4 = rail4.setTranslation(Vec3(1.5f, 4.0f, -10.65f)).mul(rail4.setScaling(Vec3(1.0, 1.2, 1.5)));
     std::vector<Matrix> railsPos = {rail1, rail2, rail3, rail4};
 
-    Matrix coinM;
-    coinM = coinM.setTranslation(Vec3(8.0f, 6.5f, 7.5f)).mul(coinM.setScaling(Vec3(0.015, 0.015, 0.015)));
-    std::vector<Matrix> coinsPos = {coinM};
+    Matrix coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8;
+    coin1 = coin1.setTranslation(Vec3(8.0f, 6.5f, 7.5f)).mul(coin1.setScaling(Vec3(0.015, 0.015, 0.015)));
+    coin2 = coin2.setTranslation(Vec3(0, 14, -3)).mul(coin2.setScaling(Vec3(0.015, 0.015, 0.015)));
+    coin3 = coin3.setTranslation(Vec3(2, 14, -3)).mul(coin3.setScaling(Vec3(0.015, 0.015, 0.015)));
+    coin4 = coin4.setTranslation(Vec3(-2, 14, -3)).mul(coin4.setScaling(Vec3(0.015, 0.015, 0.015)));
+    coin5 = coin5.setTranslation(Vec3(-4, 14, 8)).mul(coin5.setScaling(Vec3(0.015, 0.015, 0.015)));
+    coin6 = coin6.setTranslation(Vec3(-6, 14, 8)).mul(coin6.setScaling(Vec3(0.015, 0.015, 0.015)));
+    coin7 = coin7.setTranslation(Vec3(-8, 14, 8)).mul(coin7.setScaling(Vec3(0.015, 0.015, 0.015)));
+    coin8 = coin8.setTranslation(Vec3(-10, 14, 8)).mul(coin8.setScaling(Vec3(0.015, 0.015, 0.015)));
+
+    std::vector<Matrix> coinsPos = {coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8};
 
     append(lightDirtPositions, lightDirtWithGrassPositions);
     append(allCubesPositions, lightDirtPositions);
@@ -218,8 +224,8 @@ void mainLoop() {
     lightGrass.lightStrength = 5.0f;
 
     BRDFLightCB lightCoin = light;
-    lightCoin.lightColor = Vec3(1.0, 0.9, 0.2);
-    lightCoin.lightStrength = 30.0f;
+    lightCoin.lightColor = Vec3(1.0, 0.9, 0.9);
+    lightCoin.lightStrength = 50.0f;
 
     Cube* grassCubes = Cube::createGrassCube(shaderManager, &core, grassCubesPositions);
     CubeTextured* lightDirtCubes = CubeTextured::createBrickCubes(shaderManager, &core, lightDirtPositions, &light);
