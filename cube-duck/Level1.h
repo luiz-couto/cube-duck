@@ -253,7 +253,7 @@ public:
     }
 
     void createDuck() {
-        Duck *_duck = new Duck(sm, core, Vec3(8.0f, 16.0f, -3.0f));
+        Duck *_duck = new Duck(sm, core, Vec3(8.0f, 16.0f, -3.0f), camera);
         duck = _duck;
     }
 
@@ -309,6 +309,8 @@ public:
     }
 
     void checkEnemiesCollision() {
+        if (duck->isDead) return;
+
         for (Enemy *enemy : enemies) {
             Matrix objectWorldMatrix = enemy->enemyModel.vertexShaderCB->W;
             bool isColidingX = duck->checkCollisionX(&objectWorldMatrix, enemy->size);    
@@ -316,8 +318,7 @@ public:
             bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, enemy->size);
             if (isColidingX || isColidingY || isColidingZ) {
                 std::println("Colided with enemy!");
-                camera->resetCamera();
-                duck->resetPosition();
+                duck->isDead = true;
                 break;
             }
         }
@@ -366,7 +367,7 @@ public:
         }
 
         grass->draw(core, camera, &duck->vsCBAnimatedModel.W);
-        duck->draw(camera);
+        duck->draw();
 
         water->draw(core, camera, dt);
     }

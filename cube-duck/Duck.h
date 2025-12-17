@@ -24,15 +24,17 @@ enum DUCK_ANIMATION {
     RUN_FORWARD,
     WALK_BACKWARDS,
     ATTACK,
-    HIT_REACTION
+    HIT_REACTION,
+    DEATH
 };
 
-const char *AnimationsMap[] = { "idle variation", "walk forward", "turn 90 l", "turn 90 r", "run forward", "walk backwards", "attack01", "hit reaction" };
+const char *AnimationsMap[] = { "idle variation", "walk forward", "turn 90 l", "turn 90 r", "run forward", "walk backwards", "attack01", "hit reaction", "death" };
 
 class Duck {
 public:
     ShaderManager *sm;
     Core *core;
+    Camera *camera;
 
     Vec3 position;
     Vec3 lastPosition;
@@ -48,11 +50,12 @@ public:
 
     DUCK_ANIMATION currentAnimation;
     bool isJumping = false;
+    bool isDead = false;
     float jumpingCurrentHeight = 0;
 
     Vec3 startPosition;
 
-    Duck(ShaderManager *_sm, Core *_core, Vec3 _position): sm(_sm), core(_core), position(_position), startPosition(_position), duckModel(sm, DUCK_MODEL_FILE) {
+    Duck(ShaderManager *_sm, Core *_core, Vec3 _position, Camera *_camera): sm(_sm), core(_core), position(_position), camera(_camera), startPosition(_position), duckModel(sm, DUCK_MODEL_FILE) {
         duckModel.init(core, &vsCBAnimatedModel);
         animatedInstance.init(&duckModel.animatedModel->animation, 0);
         memcpy(vsCBAnimatedModel.bones, animatedInstance.matrices, sizeof(vsCBAnimatedModel.bones));
@@ -123,15 +126,26 @@ public:
     }
 
     void updateAnimation(Window *win, float dt) {
-        reactToMovementKeys(win);
+        if (isDead) {
+            blockAllMovements();
+            currentAnimation = DEATH;
+        } else {
+            reactToMovementKeys(win);
+        }
+
         animatedInstance.update(AnimationsMap[currentAnimation], dt);
         if (animatedInstance.animationFinished()) {
+            if (isDead) {
+                isDead = false;
+                resetPosition();
+                camera->resetCamera();
+            }
             currentAnimation = IDLE_VARIATION;
             animatedInstance.resetAnimationTime();
         }
     }
 
-    void draw(Camera *camera) {
+    void draw() {
         lastPosition = position;
 
         rotation.setRotationY(rotationAngle);
@@ -150,6 +164,12 @@ public:
 
     void blockMovementZ() {
         position.z = lastPosition.z;
+    }
+
+    void blockAllMovements() {
+        blockMovementX();
+        blockMovementY();
+        blockMovementZ();
     }
 
     bool checkBoxCollision(Vec3 axisPosition, Vec3 point, Vec3 size) {
