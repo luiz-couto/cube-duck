@@ -21,6 +21,7 @@
 #define WATER_LIGHT "water_light"
 #define COIN_LIGHT "coin_light"
 #define GRASS_LIGHT "grass_light"
+#define LIGHT_WHEEL "light_wheel"
 
 template <typename T>
 void append(std::vector<T> &target, std::vector<T> &source) {
@@ -111,10 +112,14 @@ public:
         lightCoin.lightColor = Vec3(1.0, 0.9, 0.9);
         lightCoin.lightStrength = 50.0f;
 
+        BRDFLightCB lightWheel = light;
+        lightWheel.lightStrength = 10.0f;
+
         lightsMap[DEFAULT_LIGTH] = light;
         lightsMap[GRASS_LIGHT] = lightGrass;
         lightsMap[WATER_LIGHT] = lightWater;
         lightsMap[COIN_LIGHT] = lightCoin;
+        lightsMap[LIGHT_WHEEL] = lightWheel;
     }
     
     void createBlocksLayout() {
@@ -145,7 +150,8 @@ public:
 
         // left tunnel
         generateCubesPositions(Vec3(-8, 6, -6), 2, 2, 6, lightDirtPositions);
-        generateCubesPositions(Vec3(-4, 6, -6), 3, 1, 7, lightDirtWithGrassPositions);
+        generateCubesPositions(Vec3(-4, 6, -6), 3, 1, 4, lightDirtWithGrassPositions);
+        generateCubesPositions(Vec3(-4, 6, 6), 3, 1, 2, lightDirtWithGrassPositions);
         generateCubesPositions(Vec3(-10, 6, -10), 4, 4, 1, lightDirtPositions);
         generateCubesPositions(Vec3(-10, 10, -8), 2, 1, 2, lightDirtPositions);
         generateCubesPositions(Vec3(-4, 10, -8), 1, 1, 1, lightDirtPositions);
@@ -187,6 +193,12 @@ public:
         palmTreeM = palmTreeM.setTranslation(Vec3(2.0f, 5.7f, 7.5f)).mul(rotationM);
         std::vector<Matrix> palmTreePos = {palmTreeM};
 
+        Matrix waterWheelM1, rotationM1, scaleM1;
+        rotationM1.setRotationY(90);
+        scaleM1 = scaleM1.setScaling(Vec3(1.5,1.5,1.5));
+        waterWheelM1 = waterWheelM1.setTranslation(Vec3(-4.0f, 6.0f, 3.0f)).mul(rotationM1).mul(scaleM1);
+        std::vector<Matrix> waterWheelPos = {waterWheelM1};
+
         Matrix rail1, rail2, rail3, rail4;
         rail1 = rail1.setTranslation(Vec3(-1.5f, 4.0f, 8.2f)).mul(rail1.setScaling(Vec3(1.0, 1.2, 1.5)));
         rail2 = rail2.setTranslation(Vec3(1.5f, 4.0f, 8.2f)).mul(rail2.setScaling(Vec3(1.0, 1.2, 1.5)));
@@ -206,10 +218,14 @@ public:
         CubeTextured* rails = new CubeTextured(sm, core, "models/rail.gem");
         rails->init(core, railsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
 
+        CubeTextured* waterWheel = new CubeTextured(sm, core, "models/waterwheel.gem");
+        waterWheel->init(core, waterWheelPos, &lightsMap[LIGHT_WHEEL], "models/textures/ColorPalette.png");
+
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);
         cubesTextured.push_back(palmTree);
         cubesTextured.push_back(rails);
+        cubesTextured.push_back(waterWheel);
     }
 
     void createWater() {
