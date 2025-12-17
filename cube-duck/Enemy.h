@@ -13,7 +13,7 @@
 #define CAT_SIAMESE_MODEL_FILE "models/Cat-Siamese.gem"
 #define E_WALK_VELOCITY 0.09f
 #define E_LOADING_FRAME 3
-#define E_ENEMY_BOX_SIZE 1.5
+#define E_ENEMY_BOX_SIZE 2.0f
 
 enum ENEMY_ANIMATION {
     E_IDLE_VARIATION,
@@ -56,6 +56,8 @@ public:
     MOVE_KIND moveKind;
     float walkVelocity;
 
+    Vec3 size = {E_ENEMY_BOX_SIZE, E_ENEMY_BOX_SIZE, E_ENEMY_BOX_SIZE};
+
     Enemy(ShaderManager *_sm, Core *_core, Vec3 _startPosition, Vec3 _endPosition, MOVE_KIND _moveKind, float _rotationAngle, std::string enemyFile, float _scale, ENEMY_ANIMATION animation, float _walkVelocity = E_WALK_VELOCITY): 
         sm(_sm), core(_core), position(_startPosition), startPosition(_startPosition), 
         endPosition(_endPosition), moveKind(_moveKind), rotationAngle(_rotationAngle), 
@@ -72,6 +74,10 @@ public:
 
     void resetPosition() {
         position = startPosition;
+    }
+
+    void setSize(Vec3 newSize) {
+        size = newSize;
     }
 
     void move() {
@@ -127,7 +133,7 @@ public:
                 endPosition = aux;
                 rotationAngle = (rotationAngle + 180) % 360;
             }
-        }        
+        }
     }
 
     void updateAnimation(Window *win, float dt) {

@@ -308,6 +308,21 @@ public:
         }
     }
 
+    void checkEnemiesCollision() {
+        for (Enemy *enemy : enemies) {
+            Matrix objectWorldMatrix = enemy->enemyModel.vertexShaderCB->W;
+            bool isColidingX = duck->checkCollisionX(&objectWorldMatrix, enemy->size);    
+            bool isColidingY = duck->checkCollisionY(&objectWorldMatrix, enemy->size);
+            bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, enemy->size);
+            if (isColidingX || isColidingY || isColidingZ) {
+                std::println("Colided with enemy!");
+                camera->resetCamera();
+                duck->resetPosition();
+                break;
+            }
+        }
+    }
+
     void checkCollisions() {
         for (Cube *cube : cubes) {
             checkRigidBodyCollision(cube);
@@ -318,6 +333,7 @@ public:
         }
 
         checkCoinsCollision();
+        checkEnemiesCollision();
     }
 
     void update(float dt) {
