@@ -15,6 +15,7 @@
 #define COIN_PIXEL_SHADER "shaders/pixel/PixelShaderLightTexture.hlsl"
 
 #define COIN_TEXTURE "models/textures/Coin2_BaseColor.png"
+#define COIN_SIZE Vec3(1.5, 1.5, 1.5)
 
 struct CoinVertexShaderCB {
     Matrix W;
@@ -30,11 +31,13 @@ public:
     std::string textureName;
     std::string filename;
 
-    Coin(ShaderManager* sm, Core* core, std::string _filename = COIN_MODEL_FILE) : GEMObject(sm, core, _filename) {
+    Coin(ShaderManager* sm, Core* core, std::string _filename = COIN_MODEL_FILE) : GEMObject(sm, core, _filename, COIN_SIZE) {
         filename = _filename;
     }
 
-    void init(Core* core, std::vector<Matrix> worldPositions, BRDFLightCB* light, std::string textureFilename = COIN_TEXTURE) {
+    void init(Core* core, std::vector<Matrix> _worldPositions, BRDFLightCB* light, std::string textureFilename = COIN_TEXTURE) {
+        worldPositions = _worldPositions;
+
         CoinVertexShaderCB *vertexShader = new CoinVertexShaderCB();
         vertexShader->W.setIdentity();
         vertexShader->VP.setIdentity();
@@ -94,7 +97,7 @@ public:
         updateConstantsVertexShader(core);
         updateConstantsPixelShader(core);
         shaderManager->updateTexturePS(core, textureName, texture->heapOffset);
-        
+
         // 4. Draw
         staticMesh.draw();
     }

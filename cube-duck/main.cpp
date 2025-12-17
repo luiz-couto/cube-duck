@@ -32,8 +32,6 @@ void reactToCameraMovement(Window *win, Camera *camera, Duck *duck) {
         duck->resetPosition();
     }
 
-    std::println("Camera from: {}, Camera to: {}", camera->from, camera->to);
-
     win->lastmousex = win->mousex;
     win->lastmousey = win->mousey;
 }
@@ -64,7 +62,7 @@ void mainLoop() {
         }
 
         reactToCameraMovement(&win, &camera, level1.duck);
-        
+
         float dt = tim.dt();
 
         core.beginRenderPass();

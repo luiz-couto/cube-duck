@@ -86,7 +86,7 @@ public:
     Grass *grass;
     std::map<std::string, BRDFLightCB> lightsMap;
     Water *water;
-    Coin* coins;
+    std::vector<Coin*> coins;
     std::vector<Enemy*> enemies;
 
     float timeAcc = 0.0f;
@@ -233,9 +233,11 @@ public:
         coin8 = coin8.setTranslation(Vec3(-10, 14, 8)).mul(coin8.setScaling(Vec3(0.015, 0.015, 0.015)));
 
         std::vector<Matrix> coinsPos = {coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8};
-        Coin* _coins = Coin::createCoins(sm, core, coinsPos, &lightsMap[COIN_LIGHT]);
-
-        coins = _coins;
+        for (Matrix pos : coinsPos) {
+            std::vector<Matrix> unary = {pos};
+            Coin* _coin = Coin::createCoins(sm, core, unary, &lightsMap[COIN_LIGHT]);
+            coins.push_back(_coin);
+        }
     }
 
     void createEnemies() {
@@ -263,27 +265,46 @@ public:
         createWater();
         createCoins();
         createEnemies();
-        createCoins();
     }
 
     void checkRigidBodyCollision(GEMObject *object) {
         for (Matrix objectWorldMatrix : object->worldPositions) {
-            bool isColidingX = duck->checkCollisionX(&objectWorldMatrix, 2);
+            bool isColidingX = duck->checkCollisionX(&objectWorldMatrix, object->size);
             if (isColidingX) {
                 duck->blockMovementX();
             }
     
-            bool isColidingY = duck->checkCollisionY(&objectWorldMatrix, 2);
+            bool isColidingY = duck->checkCollisionY(&objectWorldMatrix, object->size);
             if (isColidingY) {
                 duck->isJumping = false;
                 duck->jumpingCurrentHeight = 0.0f;
                 duck->blockMovementY();
             }
     
-            bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, 2);
+            bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, object->size);
             if (isColidingZ) {
                 duck->blockMovementZ();
             }
+        }
+    }
+
+    void checkCoinsCollision() {
+        int idxColiding = -1;
+        int idx = 0;
+        for (Coin *coin : coins) {
+            Matrix objectWorldMatrix = coin->worldPositions[0];
+            bool isColidingX = duck->checkCollisionX(&objectWorldMatrix, coin->size);    
+            bool isColidingY = duck->checkCollisionY(&objectWorldMatrix, coin->size);
+            bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, coin->size);
+            if (isColidingX || isColidingY || isColidingZ) {
+                idxColiding = idx;
+                break;
+            }
+            idx++;
+        }
+
+        if (idxColiding != -1) {
+            coins.erase(coins.begin() + idx);
         }
     }
 
@@ -295,6 +316,8 @@ public:
         for (CubeTextured *cubeTextured : cubesTextured) {
             checkRigidBodyCollision(cubeTextured);
         }
+
+        checkCoinsCollision();
     }
 
     void update(float dt) {
@@ -317,13 +340,16 @@ public:
         for (CubeTextured *cubeTextured : cubesTextured) {
             cubeTextured->draw(core, camera);
         }
+
+        for (Coin *coin : coins) {
+            coin->draw(core, camera, timeAcc);
+        }
         
         for (Enemy *enemy : enemies) {
             enemy->draw(camera);
         }
 
         grass->draw(core, camera, &duck->vsCBAnimatedModel.W);
-        coins->draw(core, camera, timeAcc);
         duck->draw(camera);
 
         water->draw(core, camera, dt);
