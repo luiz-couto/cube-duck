@@ -246,6 +246,11 @@ public:
         Enemy *cat1 = new Enemy(sm, core, Vec3(-10.0f, 6.0f, -2.0f), Vec3(-10.0f, 6.0f, -2.0f), ALONG_Z, 180, CAT_SIAMESE_MODEL_FILE, 0.05, E_ATTACK);
         Enemy *cat2 = new Enemy(sm, core, Vec3(6.0f, 6.2f, 8.0f), Vec3(6.0f, 6.2f, 0.0f), ALONG_Z, 0, CAT_MODEL_FILE, 0.04, E_WALK_FORWARD, 0.15f);
 
+        bull->setSize(Vec3(2.0, 2.0, 2.0));
+        bull2->setSize(Vec3(2.0, 2.0, 2.0));
+        cat1->setSize(Vec3(1.0, 1.0, 2.0));
+        cat2->setSize(Vec3(1.0, 1.0, 2.0));
+
         enemies.push_back(bull);
         enemies.push_back(bull2);
         enemies.push_back(cat1);
