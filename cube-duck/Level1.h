@@ -322,7 +322,6 @@ public:
             bool isColidingY = duck->checkCollisionY(&objectWorldMatrix, enemy->size);
             bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, enemy->size);
             if (isColidingX || isColidingY || isColidingZ) {
-                std::println("Colided with enemy!");
                 duck->isDead = true;
                 break;
             }
