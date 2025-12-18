@@ -16,6 +16,7 @@
 #include "Enemy.h"
 #include "Coin.h"
 #include "Random.h"
+#include "Wheel.h"
 
 #define DEFAULT_LIGTH "default_light"
 #define WATER_LIGHT "water_light"
@@ -83,6 +84,7 @@ public:
 
     std::vector<Cube*> cubes;
     std::vector<CubeTextured*> cubesTextured;
+    Wheel* wheel;
     Duck *duck;
     Grass *grass;
     std::map<std::string, BRDFLightCB> lightsMap;
@@ -193,12 +195,6 @@ public:
         palmTreeM = palmTreeM.setTranslation(Vec3(2.0f, 5.7f, 7.5f)).mul(rotationM);
         std::vector<Matrix> palmTreePos = {palmTreeM};
 
-        Matrix waterWheelM1, rotationM1, scaleM1;
-        rotationM1.setRotationY(90);
-        scaleM1 = scaleM1.setScaling(Vec3(1.5,1.5,1.5));
-        waterWheelM1 = waterWheelM1.setTranslation(Vec3(-4.0f, 6.0f, 3.0f)).mul(rotationM1).mul(scaleM1);
-        std::vector<Matrix> waterWheelPos = {waterWheelM1};
-
         Matrix rail1, rail2, rail3, rail4;
         rail1 = rail1.setTranslation(Vec3(-1.5f, 4.0f, 8.2f)).mul(rail1.setScaling(Vec3(1.0, 1.2, 1.5)));
         rail2 = rail2.setTranslation(Vec3(1.5f, 4.0f, 8.2f)).mul(rail2.setScaling(Vec3(1.0, 1.2, 1.5)));
@@ -218,14 +214,10 @@ public:
         CubeTextured* rails = new CubeTextured(sm, core, "models/rail.gem");
         rails->init(core, railsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
 
-        CubeTextured* waterWheel = new CubeTextured(sm, core, "models/waterwheel.gem");
-        waterWheel->init(core, waterWheelPos, &lightsMap[LIGHT_WHEEL], "models/textures/ColorPalette.png");
-
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);
         cubesTextured.push_back(palmTree);
         cubesTextured.push_back(rails);
-        cubesTextured.push_back(waterWheel);
     }
 
     void createWater() {
@@ -235,6 +227,17 @@ public:
 
         Water *_water = Water::createWater(sm, core, waterPlanePos, &lightsMap[WATER_LIGHT]);
         water = _water;
+    }
+
+    void createWheel() {
+        Matrix waterWheelM1, rotationM1, scaleM1;
+        rotationM1.setRotationY(90);
+        scaleM1 = scaleM1.setScaling(Vec3(1.5,1.5,1.5));
+        waterWheelM1 = waterWheelM1.setTranslation(Vec3(-4.0f, 6.0f, 3.0f)).mul(rotationM1).mul(scaleM1);
+        std::vector<Matrix> waterWheelPos = {waterWheelM1};
+
+        Wheel *_wheel = Wheel::createWheel(sm, core, waterWheelPos,  &lightsMap[LIGHT_WHEEL]);
+        wheel = _wheel;
     }
 
     void createCoins() {
@@ -284,6 +287,7 @@ public:
         createBlocksLayout();
         createObjects();
         createWater();
+        createWheel();
         createCoins();
         createEnemies();
     }
@@ -360,7 +364,7 @@ public:
     void update(float dt) {
         timeAcc += dt;
         timeAcc = fmodf(timeAcc, 2 * 3.1415f); // Avoid precision issues
-
+        
         duck->updateAnimation(win, dt);
         for (Enemy *enemy : enemies) {
             enemy->updateAnimation(win, dt);
@@ -386,6 +390,7 @@ public:
             enemy->draw(camera);
         }
 
+        wheel->draw(core, camera, dt);
         grass->draw(core, camera, &duck->vsCBAnimatedModel.W);
         duck->draw();
 

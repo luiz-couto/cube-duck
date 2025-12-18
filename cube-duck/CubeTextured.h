@@ -22,12 +22,14 @@ public:
     Texture *texture;
     std::string textureName;
     std::string filename;
+    std::string vertexShaderFile;
 
     CubeTextured(ShaderManager* sm, Core* core, std::string _filename = CUBE_MODEL_FILE) : GEMObject(sm, core, _filename) {
         filename = _filename;
     }
 
-    void init(Core* core, std::vector<Matrix> _worldPositions, BRDFLightCB* light, std::string textureFilename) {
+    void init(Core* core, std::vector<Matrix> _worldPositions, BRDFLightCB* light, std::string textureFilename, std::string _vertexShaderFile = CUBE_TEXTURED_VERTEX_SHADER) {
+        vertexShaderFile = _vertexShaderFile;
         worldPositions = _worldPositions;
 
         VertexDefaultShaderCB *vertexShader = new VertexDefaultShaderCB();
@@ -45,7 +47,7 @@ public:
         texture = new Texture();
         texture->load(core, textureName);
 
-        Shader* vShader = shaderManager->getVertexShader(CUBE_TEXTURED_VERTEX_SHADER, vertexShaderCB);
+        Shader* vShader = shaderManager->getVertexShader(vertexShaderFile, vertexShaderCB);
         Shader* pShader = shaderManager->getPixelShader(CUBE_TEXTURED_PIXEL_SHADER, lightCB);
         psos.createPSO(core, filename, vShader->shaderBlob, pShader->shaderBlob, vertexLayoutCache.getStaticLayout());
     }
@@ -59,10 +61,10 @@ public:
     }
 
     void updateConstantsVertexShader(Core* core) {
-        shaderManager->updateConstant(CUBE_TEXTURED_VERTEX_SHADER, "W", &vertexShaderCB->W);
-        shaderManager->updateConstant(CUBE_TEXTURED_VERTEX_SHADER, "VP", &vertexShaderCB->VP);
+        shaderManager->updateConstant(vertexShaderFile, "W", &vertexShaderCB->W);
+        shaderManager->updateConstant(vertexShaderFile, "VP", &vertexShaderCB->VP);
 
-        shaderManager->getVertexShader(CUBE_TEXTURED_VERTEX_SHADER, vertexShaderCB)->apply(core);
+        shaderManager->getVertexShader(vertexShaderFile, vertexShaderCB)->apply(core);
     }
 
     void draw(Core* core, Camera* camera) {
