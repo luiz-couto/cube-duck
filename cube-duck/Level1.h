@@ -215,10 +215,20 @@ public:
         CubeTextured* rails = new CubeTextured(sm, core, "models/rail.gem");
         rails->init(core, railsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
 
+        Matrix plant1, rotation1X, rotationY1;
+        rotation1X.setRotationX(-25);
+        //rotationY1.setRotationY(-90);
+        plant1 = plant1.setTranslation(Vec3(-9.2f, 13.3f, -5.0f)).mul(rotation1X).mul(plant1.setScaling(Vec3(3, 3, 3)));
+        std::vector<Matrix> plantsPos = {plant1};
+
+        CubeTextured* plants = new CubeTextured(sm, core, "models/plant.gem");
+        plants->init(core, plantsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette.png");
+
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);
         cubesTextured.push_back(palmTree);
         cubesTextured.push_back(rails);
+        cubesTextured.push_back(plants);
     }
 
     void createWater() {
