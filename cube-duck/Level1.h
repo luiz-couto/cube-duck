@@ -17,12 +17,14 @@
 #include "Coin.h"
 #include "Random.h"
 #include "Wheel.h"
+#include "Brick.h"
 
 #define DEFAULT_LIGTH "default_light"
 #define WATER_LIGHT "water_light"
 #define COIN_LIGHT "coin_light"
 #define GRASS_LIGHT "grass_light"
 #define LIGHT_WHEEL "light_wheel"
+#define LIGHT_BRICK "light_brick"
 
 template <typename T>
 void append(std::vector<T> &target, std::vector<T> &source) {
@@ -75,6 +77,35 @@ void generateGrassPositionsFromGrassCubes(std::vector<Matrix> &grassCubesPositio
     }
 }
 
+void generateBrickPositionsFromDirtCubes(std::vector<Matrix> &dirtCubesPositions, std::vector<Matrix> &bricksPositions, int factor) {
+    float limit = 0.60f;
+    
+    for (const Matrix &cubeWorld : dirtCubesPositions) {
+        int shouldGen = generateRandomInt(0,1);
+        if (!shouldGen) {
+            continue;
+        }
+        Matrix brickWorld;
+        float i = cubeWorld.m[3] / 2;
+        float y = cubeWorld.m[7] / 1.5f;
+        float j = cubeWorld.m[11] / 2;
+
+        for (int g = 0; g < factor; g++) {
+            float minX = (i*2) - limit;
+            float maxX = (i*2) + limit;
+
+            float minZ = (j*2) - limit;
+            float maxZ = (j*2) + limit;
+
+            float x = generateRandomFloat(minX, maxX);
+            float z = generateRandomFloat(minZ, maxZ);
+
+            brickWorld = brickWorld.setTranslation(Vec3(x, (y * 1.5) + 1.7f, z)).mul(brickWorld.setScaling(Vec3(0.5,0.5,0.5)));
+            bricksPositions.push_back(brickWorld);
+        }
+    }
+}
+
 class Level1 {
 public:
     Window *win;
@@ -87,6 +118,8 @@ public:
     Wheel* wheel;
     Duck *duck;
     Grass *grass;
+    Brick *bricks;
+    
     std::map<std::string, BRDFLightCB> lightsMap;
     Water *water;
     std::vector<Coin*> coins;
@@ -117,11 +150,15 @@ public:
         BRDFLightCB lightWheel = light;
         lightWheel.lightStrength = 10.0f;
 
+        BRDFLightCB lightBrick = light;
+        lightBrick.lightStrength = 7.0f;
+
         lightsMap[DEFAULT_LIGTH] = light;
         lightsMap[GRASS_LIGHT] = lightGrass;
         lightsMap[WATER_LIGHT] = lightWater;
         lightsMap[COIN_LIGHT] = lightCoin;
         lightsMap[LIGHT_WHEEL] = lightWheel;
+        lightsMap[LIGHT_BRICK] = lightBrick;
     }
     
     void createBlocksLayout() {
@@ -130,6 +167,7 @@ public:
         std::vector<Matrix> darkDirtPositions = {};
         std::vector<Matrix> grassCubesPositions = {};
         std::vector<Matrix> grassPositions = {};
+        std::vector<Matrix> bricksPositions = {};
         std::vector<Matrix> allCubesPositions = {};
         
         // base + right
@@ -168,18 +206,21 @@ public:
         generateGrassPositionsFromGrassCubes(lightDirtWithGrassPositions, grassPositions, 10);
 
         append(lightDirtPositions, lightDirtWithGrassPositions);
+        generateBrickPositionsFromDirtCubes(lightDirtPositions, bricksPositions, 1);
 
         Cube* grassCubes = Cube::createGrassCube(sm, core, grassCubesPositions);
         Cube* darkDirtCubes = Cube::createDarkDirtCube(sm, core, darkDirtPositions);
         CubeTextured* lightDirtCubes = CubeTextured::createBrickCubes(sm, core, lightDirtPositions, &lightsMap[DEFAULT_LIGTH]);
         
         Grass* _grass = Grass::createGrass(sm, core, grassPositions, &duck->vsCBAnimatedModel.W);
+        Brick* _bricks = Brick::createBrick(sm, core, bricksPositions, &lightsMap[LIGHT_BRICK]);
 
         cubes.push_back(grassCubes);
         cubes.push_back(darkDirtCubes);
         cubesTextured.push_back(lightDirtCubes);
 
         grass = _grass;
+        bricks = _bricks;
     }
     
     void createObjects() {
@@ -403,6 +444,7 @@ public:
 
         wheel->draw(core, camera, dt);
         grass->draw(core, camera, &duck->vsCBAnimatedModel.W);
+        bricks->draw(core, camera);
         duck->draw();
 
         water->draw(core, camera, dt);

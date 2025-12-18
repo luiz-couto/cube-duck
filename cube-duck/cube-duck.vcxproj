@@ -133,6 +133,7 @@
     <ClInclude Include="AnimatedModel.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Barrier.h" />
+    <ClInclude Include="Brick.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="ConstantBufferReflection.h" />
