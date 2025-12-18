@@ -116,6 +116,7 @@ public:
     std::vector<Cube*> cubes;
     std::vector<CubeTextured*> cubesTextured;
     Wheel* wheel;
+    Wheel* bigWheel;
     Duck *duck;
     Grass *grass;
     Brick *bricks;
@@ -292,6 +293,17 @@ public:
         wheel = _wheel;
     }
 
+    void createBigWheel() {
+        Matrix waterWheelM1, rotationM1, scaleM1;
+        rotationM1.setRotationY(270);
+        scaleM1 = scaleM1.setScaling(Vec3(1.9,2.2,1.7));
+        waterWheelM1 = waterWheelM1.setTranslation(Vec3(-6.8f, 8.65f, -12.6f)).mul(rotationM1).mul(scaleM1);
+        std::vector<Matrix> waterWheelPos = {waterWheelM1};
+
+        Wheel *_wheel = Wheel::createWheel(sm, core, waterWheelPos,  &lightsMap[LIGHT_WHEEL]);
+        bigWheel = _wheel;
+    }
+
     void createCoins() {
         Matrix coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8;
         coin1 = coin1.setTranslation(Vec3(8.0f, 6.5f, 7.5f)).mul(coin1.setScaling(Vec3(0.015, 0.015, 0.015)));
@@ -340,6 +352,7 @@ public:
         createObjects();
         createWater();
         createWheel();
+        createBigWheel();
         createCoins();
         createEnemies();
     }
@@ -442,6 +455,7 @@ public:
             enemy->draw(camera);
         }
 
+        bigWheel->draw(core, camera, dt);
         wheel->draw(core, camera, dt);
         grass->draw(core, camera, &duck->vsCBAnimatedModel.W);
         bricks->draw(core, camera);
