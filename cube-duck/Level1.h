@@ -215,10 +215,29 @@ public:
         CubeTextured* rails = new CubeTextured(sm, core, "models/rail.gem");
         rails->init(core, railsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
 
+        Matrix roofM;
+        roofM = roofM.setTranslation(Vec3(-7.0f, 17.0f, -7.0f)).mul(roofM.setScaling(Vec3(2.0, 1.5, 2.0)));;
+        std::vector<Matrix> roofPos = {roofM};
+
+        CubeTextured* roof = new CubeTextured(sm, core, "models/roof.gem");
+        roof->init(core, roofPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette.png");
+
+        Matrix columnM1, columnM2, columnM3, columnM4;
+        columnM1 = columnM1.setTranslation(Vec3(-3.8f, 13.5f, -10.0f)).mul(columnM1.setScaling(Vec3(1.5, 1.3, 1.5)));
+        columnM2 = columnM2.setTranslation(Vec3(-9.7f, 13.5f, -10.0f)).mul(columnM2.setScaling(Vec3(1.5, 1.3, 1.5)));
+        columnM3 = columnM3.setTranslation(Vec3(-4.2f, 13.5f, -4.0f)).mul(columnM3.setScaling(Vec3(1.5, 1.3, 1.5)));
+        columnM4 = columnM4.setTranslation(Vec3(-9.7f, 13.5f, -4.0f)).mul(columnM4.setScaling(Vec3(1.5, 1.3, 1.5)));
+        std::vector<Matrix> columnsPos = {columnM1, columnM2, columnM3, columnM4};
+
+        CubeTextured* columns = new CubeTextured(sm, core, "models/column.gem");
+        columns->init(core, columnsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette.png");
+
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);
         cubesTextured.push_back(palmTree);
         cubesTextured.push_back(rails);
+        cubesTextured.push_back(columns);
+        cubesTextured.push_back(roof);
     }
 
     void createWater() {
