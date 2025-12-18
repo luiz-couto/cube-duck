@@ -146,7 +146,8 @@ public:
         generateCubesPositions(Vec3(-10, 12, -4), 1, 7, 2, lightDirtPositions);
 
         // left base
-        generateCubesPositions(Vec3(-10, 4, -10), 1, 4, 10, lightDirtPositions);
+        generateCubesPositions(Vec3(-10, 4, -10), 1, 4, 6, lightDirtPositions);
+        generateCubesPositions(Vec3(-10, 4, 6), 1, 4, 2, lightDirtPositions);
         generateCubesPositions(Vec3(-10, 6, 8), 4, 4, 1, lightDirtPositions);
         generateCubesPositions(Vec3(-10, 12, 0), 1, 4, 4, lightDirtPositions);
 
@@ -232,8 +233,8 @@ public:
     void createWheel() {
         Matrix waterWheelM1, rotationM1, scaleM1;
         rotationM1.setRotationY(90);
-        scaleM1 = scaleM1.setScaling(Vec3(1.5,1.5,1.5));
-        waterWheelM1 = waterWheelM1.setTranslation(Vec3(-4.0f, 6.0f, 3.0f)).mul(rotationM1).mul(scaleM1);
+        scaleM1 = scaleM1.setScaling(Vec3(1.5,1.8,1.5));
+        waterWheelM1 = waterWheelM1.setTranslation(Vec3(-3.5f, 4.2f, 3.0f)).mul(rotationM1).mul(scaleM1);
         std::vector<Matrix> waterWheelPos = {waterWheelM1};
 
         Wheel *_wheel = Wheel::createWheel(sm, core, waterWheelPos,  &lightsMap[LIGHT_WHEEL]);
