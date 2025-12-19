@@ -11,6 +11,8 @@
 #define CAT_MODEL_FILE "models/Cat-Orange.gem"
 #define CAT_DARK_MODEL_FILE "models/Cat-Dark.gem"
 #define CAT_SIAMESE_MODEL_FILE "models/Cat-Siamese.gem"
+#define DUCK_BROWN_MODEL_FILE "models/Duck-brown.gem"
+#define DUCK_MIXED_MODEL_FILE "models/Duck-mixed.gem"
 #define E_WALK_VELOCITY 0.09f
 #define E_LOADING_FRAME 3
 #define E_ENEMY_BOX_SIZE 2.0f
@@ -23,7 +25,8 @@ enum ENEMY_ANIMATION {
     E_RUN_FORWARD,
     E_WALK_BACKWARDS,
     E_ATTACK,
-    E_HIT_REACTION
+    E_HIT_REACTION,
+    E_BIRD_IDLE_VARIATION
 };
 
 enum MOVE_KIND {
@@ -31,7 +34,7 @@ enum MOVE_KIND {
     ALONG_Z,
 };
 
-const char *E_AnimationsMap[] = { "idle variation", "walk forward", "turn 90 l", "turn 90 r", "run forward", "walk backwards", "attack01", "hit reaction" };
+const char *E_AnimationsMap[] = { "idle variation", "walk forward", "turn 90 l", "turn 90 r", "run forward", "walk backwards", "attack01", "hit reaction", "bird idle variation" };
 
 class Enemy {
 public:
