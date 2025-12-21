@@ -184,7 +184,7 @@ public:
 
     bool checkBoxCollision(Vec3 axisPosition, Vec3 point, Vec3 size) {
         float duckHalfX = 0.5f;
-        float duckHalfY = 0.8f;
+        float duckHalfY = 1.0f;
         float duckHalfZ = 0.5f;
         
         bool overlapX = std::abs(axisPosition.x - point.x) < (duckHalfX + size.x / 2);
