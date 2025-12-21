@@ -104,4 +104,15 @@ class Camera {
         to = Vec3(-2, 3, -1);
         init();
     }
+
+    Vec3 getForwardVector() {
+        Vec3 forward = (to - from).normalize();
+        return forward;
+    }
+
+    Vec3 getRightVector() {
+        Vec3 forward = getForwardVector();
+        Vec3 right = (forward.cross(up)).normalize();
+        return right;
+    }
 };

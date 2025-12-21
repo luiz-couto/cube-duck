@@ -68,6 +68,25 @@ public:
         position = startPosition;
     }
 
+    Vec3 getGridLockedDirection() {
+        Vec3 forward = camera->getForwardVector();
+
+        // East or West
+        if (std::abs(forward.x) > std::abs(forward.z)) {
+            return forward.x > 0 ? Vec3(1, 0, 0) : Vec3(-1, 0, 0);
+        }
+        
+        // North or South
+        return forward.z > 0 ? Vec3(0, 0, 1) : Vec3(0, 0, -1);
+    }
+
+    void updateDuckRotation(Vec3 direction) {
+        if (direction.x > 0) rotationAngle = 270;
+        else if (direction.x < 0) rotationAngle = 90;
+        else if (direction.z > 0) rotationAngle = 180;
+        else if (direction.z < 0) rotationAngle = 0;
+    }
+
     void reactToMovementKeys(Window *win) {
         position.y -= GRAVITY_PULL;
 
@@ -85,43 +104,34 @@ public:
         }
 
         if (win->keys['W']) {
-            if (rotationAngle == 0 || rotationAngle == 360) position.z -= RUN_VELOCITY;
-            if (rotationAngle == 90) position.x -= RUN_VELOCITY;
-            if (rotationAngle == 180) position.z += RUN_VELOCITY;
-            if (rotationAngle == 270) position.x += RUN_VELOCITY;
-
+            Vec3 direction = getGridLockedDirection();
+            position += direction * RUN_VELOCITY;
+            updateDuckRotation(direction);
             currentAnimation = RUN_FORWARD;
         }
 
         if (win->keys['S']) {
-            if (rotationAngle == 0 || rotationAngle == 360) position.z += WALK_VELOCITY;
-            if (rotationAngle == 90) position.x += WALK_VELOCITY;
-            if (rotationAngle == 180) position.z -= WALK_VELOCITY;
-            if (rotationAngle == 270) position.x -= WALK_VELOCITY;
-
-            currentAnimation = WALK_BACKWARDS;
-        }
-
-
-        if (loadingFrame < LOADING_FRAME) {
-            loadingFrame++;
-            return;
-        }
-        if (loadingFrame == LOADING_FRAME) {
-            loadingFrame = 0;
-        }
-
-
-        if (win->keys['A']) {
-            rotationAngle += 90;
-            if (rotationAngle > 360) rotationAngle = 0;
-            currentAnimation = TURN_90_LEFT;
+            Vec3 direction = getGridLockedDirection();
+            position -= direction * RUN_VELOCITY;
+            Vec3 oppositeDir = Vec3(-direction.x, 0, -direction.z);
+            updateDuckRotation(oppositeDir);
+            currentAnimation = RUN_FORWARD;
         }
 
         if (win->keys['D']) {
-            rotationAngle -= 90;
-            if (rotationAngle < 0) rotationAngle = 270;
-            currentAnimation = TURN_90_RIGHT;
+            Vec3 direction = getGridLockedDirection();
+            Vec3 leftDirection = Vec3(-direction.z, 0, direction.x);
+            position += leftDirection * RUN_VELOCITY;
+            updateDuckRotation(leftDirection);
+            currentAnimation = RUN_FORWARD;
+        }
+
+        if (win->keys['A']) {
+            Vec3 direction = getGridLockedDirection();
+            Vec3 rightDirection = Vec3(direction.z, 0, -direction.x);
+            position += rightDirection * RUN_VELOCITY;
+            updateDuckRotation(rightDirection);
+            currentAnimation = RUN_FORWARD;
         }
     }
 
