@@ -71,6 +71,19 @@ public:
     void reactToMovementKeys(Window *win) {
         position.y -= GRAVITY_PULL;
 
+        if (isJumping) {
+            if (jumpingCurrentHeight < JUMP_HEIGHT) {
+                position.y += JUMP_INCREMENT;
+                jumpingCurrentHeight += JUMP_INCREMENT;
+            }
+        }
+
+        if (!isJumping && jumpingCurrentHeight == 0 && win->keys[' ']) {
+            position.y += JUMP_INCREMENT;
+            isJumping = true;
+            currentAnimation = HIT_REACTION;
+        }
+
         if (win->keys['W']) {
             if (rotationAngle == 0 || rotationAngle == 360) position.z -= RUN_VELOCITY;
             if (rotationAngle == 90) position.x -= RUN_VELOCITY;
@@ -87,19 +100,6 @@ public:
             if (rotationAngle == 270) position.x -= WALK_VELOCITY;
 
             currentAnimation = WALK_BACKWARDS;
-        }
-
-        if (isJumping) {
-            if (jumpingCurrentHeight < JUMP_HEIGHT) {
-                position.y += JUMP_INCREMENT;
-                jumpingCurrentHeight += JUMP_INCREMENT;
-            }
-        }
-
-        if (!isJumping && jumpingCurrentHeight == 0 && win->keys[' ']) {
-            position.y += JUMP_INCREMENT;
-            isJumping = true;
-            currentAnimation = HIT_REACTION;
         }
 
 
@@ -190,13 +190,13 @@ public:
     }
 
     bool checkCollisionY(Matrix *worldMatrix, Vec3 size) {
-        Vec3 axisPosition = Vec3(lastPosition.x, position.y - 0.5f, lastPosition.z);
+        Vec3 axisPosition = Vec3(lastPosition.x, position.y, lastPosition.z);
         Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7],worldMatrix->m[11]);
         return checkBoxCollision(axisPosition, point, size);
     }
 
     bool checkCollisionZ(Matrix *worldMatrix, Vec3 size) {
-        Vec3 axisPosition = Vec3(lastPosition.x, lastPosition.y + 0.3f, position.z);
+        Vec3 axisPosition = Vec3(lastPosition.x, lastPosition.y, position.z);
         Vec3 point = Vec3(worldMatrix->m[3], worldMatrix->m[7], worldMatrix->m[11]);
         return checkBoxCollision(axisPosition, point, size);
     }
