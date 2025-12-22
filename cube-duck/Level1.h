@@ -247,9 +247,11 @@ public:
 
         CubeTextured* pilar = new CubeTextured(sm, core, "models/pilar.gem");
         pilar->init(core, pilarPos, &lightsMap[DEFAULT_LIGTH], "models/textures/metal_color.png");
+        pilar->setSize(Vec3(1.3, 5, 1.3));
 
         CubeTextured* pilarBroken = new CubeTextured(sm, core, "models/pilar_broken.gem");
         pilarBroken->init(core, pilarBrokenPos, &lightsMap[DEFAULT_LIGTH], "models/textures/metal_color.png");
+        pilarBroken->setSize(Vec3(1, 2.5, 1));
 
         CubeTextured* palmTree = new CubeTextured(sm, core, "models/palm_tree.gem");
         palmTree->init(core, palmTreePos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");

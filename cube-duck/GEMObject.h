@@ -58,6 +58,10 @@ public:
     void rotateY(float angle) {
         vertexShaderCB->W.setRotationY(angle);
     }
+    
+    void setSize(Vec3 newSize) {
+        size = newSize;
+    }
 
     void updateConstantsVertexShader(Core* core) {
         shaderManager->updateConstant("shaders/vertex/VertexShader.hlsl", "W", &vertexShaderCB->W);
