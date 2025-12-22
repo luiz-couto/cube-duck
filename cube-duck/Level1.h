@@ -302,7 +302,7 @@ public:
 
         CubeTextured* tree = new CubeTextured(sm, core, "models/tree.gem");
         tree->init(core, treePos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
-        //tree->setSize(Vec3(4, 4, 4));
+        tree->setSize(Vec3(2, 8, 2));
 
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);

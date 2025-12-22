@@ -72,12 +72,12 @@ void mainLoop() {
     core.flushGraphicsQueue();
 }
 
-// int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow) {
-//     mainLoop();
-//     return 0;
-// }
-
-int main() {
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow) {
     mainLoop();
     return 0;
 }
+
+// int main() {
+//     mainLoop();
+//     return 0;
+// }
