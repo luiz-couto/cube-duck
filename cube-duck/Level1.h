@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <functional>
 
 #include "Math.h"
 #include "ShaderManager.h"
@@ -106,6 +107,11 @@ void generateBrickPositionsFromDirtCubes(std::vector<Matrix> &dirtCubesPositions
     }
 }
 
+struct CoinVisible {
+    Coin* coin;
+    bool isVisible;
+};
+
 class Level1 {
 public:
     Window *win;
@@ -123,7 +129,7 @@ public:
     
     std::map<std::string, BRDFLightCB> lightsMap;
     Water *water;
-    std::vector<Coin*> coins;
+    std::vector<CoinVisible> coins;
     std::vector<Enemy*> enemies;
 
     float timeAcc = 0.0f;
@@ -311,8 +317,7 @@ public:
         bigWheel = _wheel;
     }
 
-    void createCoins() {
-        coins = {};
+    void createCoins() {        
         Matrix coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8;
         coin1 = coin1.setTranslation(Vec3(8.0f, 6.5f, 7.5f)).mul(coin1.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin2 = coin2.setTranslation(Vec3(0, 14, -3)).mul(coin2.setScaling(Vec3(0.015, 0.015, 0.015)));
@@ -327,7 +332,7 @@ public:
         for (Matrix pos : coinsPos) {
             std::vector<Matrix> unary = {pos};
             Coin* _coin = Coin::createCoins(sm, core, unary, &lightsMap[COIN_LIGHT]);
-            coins.push_back(_coin);
+            coins.push_back(CoinVisible{_coin, true});
         }
     }
 
@@ -392,11 +397,15 @@ public:
     void checkCoinsCollision() {
         int idxColiding = -1;
         int idx = 0;
-        for (Coin *coin : coins) {
-            Matrix objectWorldMatrix = coin->worldPositions[0];
-            bool isColidingX = duck->checkCollisionX(&objectWorldMatrix, coin->size);    
-            bool isColidingY = duck->checkCollisionY(&objectWorldMatrix, coin->size);
-            bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, coin->size);
+        for (CoinVisible coinVisible : coins) {
+            if (!coinVisible.isVisible) {
+                idx++;
+                continue;
+            }
+            Matrix objectWorldMatrix = coinVisible.coin->worldPositions[0];
+            bool isColidingX = duck->checkCollisionX(&objectWorldMatrix, coinVisible.coin->size);    
+            bool isColidingY = duck->checkCollisionY(&objectWorldMatrix, coinVisible.coin->size);
+            bool isColidingZ = duck->checkCollisionZ(&objectWorldMatrix, coinVisible.coin->size);
             if (isColidingX || isColidingY || isColidingZ) {
                 idxColiding = idx;
                 break;
@@ -405,7 +414,7 @@ public:
         }
 
         if (idxColiding != -1) {
-            coins.erase(coins.begin() + idx);
+            coins[idxColiding].isVisible = false;
         }
     }
 
@@ -440,11 +449,24 @@ public:
         checkEnemiesCollision();
     }
 
+    void resetCoins() {
+        for (CoinVisible &coinVisible : coins) {
+            coinVisible.isVisible = true;
+        }
+    }
+
+    void reset() {
+        duck->isDead = false;
+        duck->resetPosition();
+        camera->resetCamera();
+        resetCoins();
+    }
+
     void update(float dt) {
         timeAcc += dt;
         timeAcc = fmodf(timeAcc, 2 * 3.1415f); // Avoid precision issues
         
-        duck->updateAnimation(win, dt);
+        duck->updateAnimation(win, dt, [this]() { this->reset(); });
         for (Enemy *enemy : enemies) {
             enemy->updateAnimation(win, dt);
         }
@@ -461,8 +483,10 @@ public:
             cubeTextured->draw(core, camera);
         }
 
-        for (Coin *coin : coins) {
-            coin->draw(core, camera, timeAcc);
+        for (CoinVisible coinVisible : coins) {
+            if (coinVisible.isVisible) {
+                coinVisible.coin->draw(core, camera, timeAcc);
+            }
         }
         
         for (Enemy *enemy : enemies) {

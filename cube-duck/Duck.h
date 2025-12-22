@@ -136,7 +136,7 @@ public:
         }
     }
 
-    void updateAnimation(Window *win, float dt) {
+    void updateAnimation(Window *win, float dt, std::function<void()> onDeathFinished = nullptr) {
         if (isDead) {
             blockAllMovements();
             currentAnimation = DEATH;
@@ -147,9 +147,9 @@ public:
         animatedInstance.update(AnimationsMap[currentAnimation], dt);
         if (animatedInstance.animationFinished()) {
             if (isDead) {
-                isDead = false;
-                resetPosition();
-                camera->resetCamera();
+                if (onDeathFinished) {
+                    onDeathFinished();
+                }
             }
             currentAnimation = IDLE_VARIATION;
             animatedInstance.resetAnimationTime();
