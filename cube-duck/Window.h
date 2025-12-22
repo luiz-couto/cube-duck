@@ -34,5 +34,11 @@ public:
         mousey = y;
     }
 
+    void reset() {
+        for (int i = 0; i < 256; i++) {
+            keys[i] = false;
+        }
+    }
+
     void processMessages();
 };

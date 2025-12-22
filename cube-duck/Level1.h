@@ -459,13 +459,31 @@ public:
         duck->isDead = false;
         duck->resetPosition();
         camera->resetCamera();
+        win->reset();
         resetCoins();
     }
 
+    void checkForWinning() {
+        bool allCollected = true;
+        for (CoinVisible &coinVisible : coins) {
+            if (coinVisible.isVisible) {
+                allCollected = false;
+                break;
+            }
+        }
+
+        if (allCollected) {
+            MessageBoxA(NULL, "You collected all the coins! You won!\nPress OK to restart.", "Victory", MB_OK | MB_ICONINFORMATION);
+            reset();
+        }
+    }
+
     void update(float dt) {
+        checkForWinning();
+
         timeAcc += dt;
         timeAcc = fmodf(timeAcc, 2 * 3.1415f); // Avoid precision issues
-        
+
         duck->updateAnimation(win, dt, [this]() { this->reset(); });
         for (Enemy *enemy : enemies) {
             enemy->updateAnimation(win, dt);
