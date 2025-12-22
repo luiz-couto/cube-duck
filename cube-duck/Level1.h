@@ -255,9 +255,11 @@ public:
 
         CubeTextured* palmTree = new CubeTextured(sm, core, "models/palm_tree.gem");
         palmTree->init(core, palmTreePos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
+        palmTree->setSize(Vec3(4.7, 4, 1));
 
         CubeTextured* rails = new CubeTextured(sm, core, "models/rail.gem");
         rails->init(core, railsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
+        rails->setSize(Vec3(2,1.5,2));
 
         Matrix plant1, rotation1X, rotationY1;
         rotation1X.setRotationX(-25);
@@ -267,6 +269,7 @@ public:
 
         CubeTextured* plants = new CubeTextured(sm, core, "models/plant.gem");
         plants->init(core, plantsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette.png");
+        plants->setSize(Vec3(0.01,0.01,0.01));
 
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);
@@ -292,6 +295,7 @@ public:
         std::vector<Matrix> waterWheelPos = {waterWheelM1};
 
         Wheel *_wheel = Wheel::createWheel(sm, core, waterWheelPos,  &lightsMap[LIGHT_WHEEL]);
+        _wheel->setSize(Vec3(6,8,4));
         wheel = _wheel;
     }
 
@@ -303,6 +307,7 @@ public:
         std::vector<Matrix> waterWheelPos = {waterWheelM1};
 
         Wheel *_wheel = Wheel::createWheel(sm, core, waterWheelPos,  &lightsMap[LIGHT_WHEEL]);
+        _wheel->setSize(Vec3(6,8,4));
         bigWheel = _wheel;
     }
 
@@ -426,6 +431,9 @@ public:
         for (CubeTextured *cubeTextured : cubesTextured) {
             checkRigidBodyCollision(cubeTextured);
         }
+
+        checkRigidBodyCollision(wheel);
+        checkRigidBodyCollision(bigWheel);
 
         checkCoinsCollision();
         checkEnemiesCollision();
