@@ -16,7 +16,7 @@
 #define CAMERA_MAX_X 10.0f
 #define CAMERA_MIN_X -10.0f
 
-#define MIN_ZOOM_Y 30.0f
+#define MIN_ZOOM_Y 18.0f
 #define MAX_ZOOM_Y 55.0f
 
 #define MIN_ANGLE_Z 0.6

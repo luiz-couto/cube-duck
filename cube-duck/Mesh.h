@@ -22,10 +22,11 @@ struct VertexDefaultShaderCB {
     Matrix VP;
 };
 
-STATIC_VERTEX addVertex(Vec3 p, Vec3 n, float tu, float tv) {
+STATIC_VERTEX addVertex(Vec3 p, Vec3 n, float tu, float tv, Vec3 tangent = Vec3(0,0,0)) {
     STATIC_VERTEX v;
     v.pos = p;
     v.normal = n;
+    v.tangent = tangent;
     v.tangent = Vec3(0, 0, 0); // For now
     v.tu = tu;
     v.tv = tv;

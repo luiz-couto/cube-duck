@@ -272,7 +272,7 @@ public:
 
         D3D12_DESCRIPTOR_RANGE srvRange = {};
         srvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        srvRange.NumDescriptors = 8; // number of SRVs (t0–t7)
+        srvRange.NumDescriptors = 8; // number of SRVs (t0-t7)
         srvRange.BaseShaderRegister = 0; // starting at t0
         srvRange.RegisterSpace = 0;
         srvRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -282,6 +282,20 @@ public:
         rootParameterTex.DescriptorTable.pDescriptorRanges = &srvRange;
         rootParameterTex.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
         parameters.push_back(rootParameterTex);
+
+        D3D12_DESCRIPTOR_RANGE srvRange2 = {};
+        srvRange2.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+        srvRange2.NumDescriptors = 8;
+        srvRange2.BaseShaderRegister = 8;
+        srvRange2.RegisterSpace = 0;
+        srvRange2.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+        D3D12_ROOT_PARAMETER rootParameterTex2;
+        rootParameterTex2.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+        rootParameterTex2.DescriptorTable.NumDescriptorRanges = 1;
+        rootParameterTex2.DescriptorTable.pDescriptorRanges = &srvRange2;
+        rootParameterTex2.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+        parameters.push_back(rootParameterTex2);
 
         D3D12_STATIC_SAMPLER_DESC staticSampler = {};
         staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -308,7 +322,11 @@ public:
 
         ID3DBlob* serialized;
         ID3DBlob* error;
-        D3D12SerializeRootSignature(&desc, D3D_ROOT_SIGNATURE_VERSION_1, &serialized, &error);
+        HRESULT hr = D3D12SerializeRootSignature(&desc, D3D_ROOT_SIGNATURE_VERSION_1, &serialized, &error);
+        if (FAILED(hr)) {
+            MessageBoxA(NULL, (char*)error->GetBufferPointer(), "Root Signature Serialization Error", MB_OK | MB_ICONERROR);
+            return;
+        }
         device->CreateRootSignature(0, serialized->GetBufferPointer(), serialized->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
         serialized->Release();
 

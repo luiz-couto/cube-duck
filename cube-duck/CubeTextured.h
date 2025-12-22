@@ -10,25 +10,36 @@
 #include "Texture.h"
 #include "Light.h"
 
-#define CUBE_MODEL_FILE "models/cube_5.gem"
+#define CUBE_MODEL_FILE "models/cube_7.gem"
 #define CUBE_TEXTURED_VERTEX_SHADER "shaders/vertex/VertexShaderLightTexture.hlsl"
 #define CUBE_TEXTURED_PIXEL_SHADER "shaders/pixel/PixelShaderLightTexture.hlsl"
+#define CUBE_TEXTURED_PIXEL_SHADER_NORMAL "shaders/pixel/PixelShaderLightTextureNormalMap.hlsl"
 
 #define BRICK_TEXTURE "models/textures/metal_color.png"
+#define BRICK_NORMAL_MAP "models/textures/normal3.png"
 
 class CubeTextured : public GEMObject {
 public:
     BRDFLightCB* lightCB;
     Texture *texture;
+    Texture *normalMap;
     std::string textureName;
+    std::string normalMapName = "";
     std::string filename;
     std::string vertexShaderFile;
+    std::string pixelShaderFile;
 
     CubeTextured(ShaderManager* sm, Core* core, std::string _filename = CUBE_MODEL_FILE) : GEMObject(sm, core, _filename) {
         filename = _filename;
     }
 
-    void init(Core* core, std::vector<Matrix> _worldPositions, BRDFLightCB* light, std::string textureFilename, std::string _vertexShaderFile = CUBE_TEXTURED_VERTEX_SHADER) {
+    void init(Core* core, std::vector<Matrix> _worldPositions, BRDFLightCB* light, std::string textureFilename, std::string normalMapFilename = "", std::string _vertexShaderFile = CUBE_TEXTURED_VERTEX_SHADER) {
+        if (normalMapFilename != "") {
+            pixelShaderFile = CUBE_TEXTURED_PIXEL_SHADER_NORMAL;
+        } else {
+            pixelShaderFile = CUBE_TEXTURED_PIXEL_SHADER;
+        }
+        
         vertexShaderFile = _vertexShaderFile;
         worldPositions = _worldPositions;
 
@@ -47,17 +58,23 @@ public:
         texture = new Texture();
         texture->load(core, textureName);
 
+        if (normalMapFilename != "") {
+            normalMapName = normalMapFilename;
+            normalMap = new Texture();
+            normalMap->load(core, normalMapFilename);
+        }
+
         Shader* vShader = shaderManager->getVertexShader(vertexShaderFile, vertexShaderCB);
-        Shader* pShader = shaderManager->getPixelShader(CUBE_TEXTURED_PIXEL_SHADER, lightCB);
+        Shader* pShader = shaderManager->getPixelShader(pixelShaderFile, lightCB);
         psos.createPSO(core, filename, vShader->shaderBlob, pShader->shaderBlob, vertexLayoutCache.getStaticLayout());
     }
 
     void updateConstantsPixelShader(Core* core) {
-        shaderManager->updateConstant(CUBE_TEXTURED_PIXEL_SHADER, "LightColor", &lightCB->lightColor);
-        shaderManager->updateConstant(CUBE_TEXTURED_PIXEL_SHADER, "LightDirection", &lightCB->lightDirection);
-        shaderManager->updateConstant(CUBE_TEXTURED_PIXEL_SHADER, "LightStrength", &lightCB->lightStrength);
+        shaderManager->updateConstant(pixelShaderFile, "LightColor", &lightCB->lightColor);
+        shaderManager->updateConstant(pixelShaderFile, "LightDirection", &lightCB->lightDirection);
+        shaderManager->updateConstant(pixelShaderFile, "LightStrength", &lightCB->lightStrength);
 
-        shaderManager->getPixelShader(CUBE_TEXTURED_PIXEL_SHADER, lightCB)->apply(core);
+        shaderManager->getPixelShader(pixelShaderFile, lightCB)->apply(core);
     }
 
     void updateConstantsVertexShader(Core* core) {
@@ -76,7 +93,12 @@ public:
         // 2. Update constant buffer values
         updateConstantsVertexShader(core);
         updateConstantsPixelShader(core);
-        shaderManager->updateTexturePS(core, textureName, texture->heapOffset);
+
+        if (normalMapName != "") {
+            shaderManager->updateTexturesPSWithNormalMap(core, textureName, texture->heapOffset, normalMapName, normalMap->heapOffset);
+        } else {
+            shaderManager->updateTexturePS(core, textureName, texture->heapOffset);
+        }
         
         // 4. Draw
         staticMesh.draw();
