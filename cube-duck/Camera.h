@@ -34,7 +34,7 @@ class Camera {
     float angleZ = 0.0f;
     float distance = 0.0f;
 
-    Camera() : from(16.3f, 23.7f, -17.0f), to(-2, 3, -1), up(0, 1, 0) {
+    Camera() : from(20.5f, 28.5f, 5.96f), to(-1.2, 5, -0.64), up(0, 1, 0) {
         init();
     }
     Camera(Vec3 from, Vec3 to, Vec3 up) : from(from), to(to), up(up) {
@@ -100,8 +100,8 @@ class Camera {
     }
 
     void resetCamera() {
-        from = Vec3(16.3f, 23.7f, -17.0f);
-        to = Vec3(-2, 3, -1);
+        from = Vec3(20.5f, 28.5f, 5.96f);
+        to = Vec3(-1.2, 5, -0.64);
         init();
     }
 
