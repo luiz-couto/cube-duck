@@ -27,11 +27,6 @@ void reactToCameraMovement(Window *win, Camera *camera, Duck *duck) {
         win->mouseWheelDelta = 0;
     }
 
-    if (win->keys['R']) {
-        camera->resetCamera();
-        duck->resetPosition();
-    }
-
     win->lastmousex = win->mousex;
     win->lastmousey = win->mousey;
 }

@@ -133,6 +133,7 @@ public:
     std::vector<Enemy*> enemies;
 
     float timeAcc = 0.0f;
+    bool isFirstFrame = true;
 
     Level1(Window *_win, ShaderManager *_sm, Core *_core, Camera *_camera) : win(_win), sm(_sm), core(_core), camera(_camera) {};
 
@@ -534,6 +535,16 @@ public:
         timeAcc += dt;
         timeAcc = fmodf(timeAcc, 2 * 3.1415f); // Avoid precision issues
 
+        if (win->keys['R']) {
+            reset();
+            return;
+        }
+
+        if (duck->position.y < -20.0f) {
+            reset();
+            return;
+        }
+
         duck->updateAnimation(win, dt, [this]() { this->reset(); });
         for (Enemy *enemy : enemies) {
             enemy->updateAnimation(win, dt);
@@ -568,5 +579,10 @@ public:
         duck->draw();
 
         water->draw(core, camera, dt);
+
+        if (isFirstFrame) {
+            MessageBoxA(NULL, "Level 1:\nCollect all the coins while avoiding enemies!\nUse WASD to move, SPACE to jump.\nMove the camera with the mouse click and drag and scroll to zoom.\nIf you're stuck, press R to reset and try again ;)", "Instructions", MB_OK | MB_ICONINFORMATION);
+            isFirstFrame = false;
+        }
     }
 };
