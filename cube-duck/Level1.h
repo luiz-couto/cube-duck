@@ -295,11 +295,20 @@ public:
         CubeTextured* spikes = new CubeTextured(sm, core, "models/spikes.gem");
         spikes->init(core, spikesPos, &lightsMap[LIGHT_WHEEL], "models/textures/ColorPalette2.png");
 
+        Matrix treeM;
+        treeM = treeM.setTranslation(Vec3(8.0f, 6.0f, -10.0f)).mul(treeM.setScaling(Vec3(0.8,0.8,0.8)));
+        std::vector<Matrix> treePos = {treeM};
+
+        CubeTextured* tree = new CubeTextured(sm, core, "models/tree.gem");
+        tree->init(core, treePos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette2.png");
+        //tree->setSize(Vec3(4, 4, 4));
+
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);
         cubesTextured.push_back(palmTree);
         cubesTextured.push_back(rails);
         cubesTextured.push_back(plants);
+        cubesTextured.push_back(tree);
         //cubesTextured.push_back(spikes);
     }
 
@@ -358,8 +367,8 @@ public:
         coin16 = coin16.setTranslation(Vec3(-4, 18, 12)).mul(coin16.setScaling(Vec3(0.015, 0.015, 0.015)));
 
         coin17 = coin17.setTranslation(Vec3(-10, 6, -8)).mul(coin17.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin18 = coin18.setTranslation(Vec3(0, 6, -10)).mul(coin18.setScaling(Vec3(0.015, 0.015, 0.015)));
         
-        coin18 = coin18.setTranslation(Vec3(-8, 6, 10)).mul(coin18.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin19 = coin19.setTranslation(Vec3(-6, 6, 10)).mul(coin19.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin20 = coin20.setTranslation(Vec3(-4, 6, 10)).mul(coin20.setScaling(Vec3(0.015, 0.015, 0.015)));
 
@@ -369,7 +378,7 @@ public:
         coin23 = coin23.setTranslation(Vec3(-7, 10, -4)).mul(coin23.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin24 = coin24.setTranslation(Vec3(-7, 10, 2)).mul(coin24.setScaling(Vec3(0.015, 0.015, 0.015)));
 
-        std::vector<Matrix> coinsPos = {coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, coin11, coin12, coin13, coin17, coin20, coin21, coin22, coin23, coin24};
+        std::vector<Matrix> coinsPos = {coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, coin11, coin12, coin13, coin17, coin18, coin20, coin21, coin22, coin23, coin24};
         for (Matrix pos : coinsPos) {
             std::vector<Matrix> unary = {pos};
             Coin* _coin = Coin::createCoins(sm, core, unary, &lightsMap[COIN_LIGHT]);
