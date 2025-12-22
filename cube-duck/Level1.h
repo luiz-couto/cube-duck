@@ -312,6 +312,7 @@ public:
     }
 
     void createCoins() {
+        coins = {};
         Matrix coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8;
         coin1 = coin1.setTranslation(Vec3(8.0f, 6.5f, 7.5f)).mul(coin1.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin2 = coin2.setTranslation(Vec3(0, 14, -3)).mul(coin2.setScaling(Vec3(0.015, 0.015, 0.015)));

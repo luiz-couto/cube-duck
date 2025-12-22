@@ -88,6 +88,7 @@ public:
     }
 
     void reactToMovementKeys(Window *win) {
+        if (isDead) return;
         position.y -= GRAVITY_PULL;
 
         if (isJumping) {
