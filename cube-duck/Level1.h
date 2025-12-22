@@ -200,11 +200,18 @@ public:
         generateCubesPositions(Vec3(-8, 6, -6), 2, 2, 6, lightDirtPositions);
         generateCubesPositions(Vec3(-4, 6, -6), 3, 1, 4, lightDirtWithGrassPositions);
         generateCubesPositions(Vec3(-4, 6, 6), 3, 1, 2, lightDirtWithGrassPositions);
-        generateCubesPositions(Vec3(-10, 6, -10), 4, 4, 1, lightDirtPositions);
-        generateCubesPositions(Vec3(-10, 10, -8), 2, 1, 2, lightDirtPositions);
+        generateCubesPositions(Vec3(-10, 6, -10), 4, 4, 1, lightDirtPositions); // Wall
+        //generateCubesPositions(Vec3(-10, 10, -8), 2, 1, 2, lightDirtPositions);
         generateCubesPositions(Vec3(-4, 10, -8), 1, 1, 1, lightDirtPositions);
-        generateCubesPositions(Vec3(-8, 8, -8), 1, 2, 1, lightDirtPositions);
+        generateCubesPositions(Vec3(-8, 9, -8), 1, 2, 1, lightDirtPositions);
         generateCubesPositions(Vec3(-4, 12, -8), 1, 1, 2, lightDirtPositions);
+
+        generateCubesPositions(Vec3(-10, 12, 10), 2, 4, 1, lightDirtPositions);
+        //generateCubesPositions(Vec3(-10, 12, 12), 3, 4, 1, lightDirtPositions);
+
+        generateCubesPositions(Vec3(-10, 4, 10), 1, 4, 1, grassCubesPositions);
+        generateCubesPositions(Vec3(-12, 4, 6), 1, 1, 3, grassCubesPositions);
+
 
         // grass stand
         generateCubesPositions(Vec3(0, 4, -10), 1, 1, 2, grassCubesPositions);
@@ -277,11 +284,23 @@ public:
         plants->init(core, plantsPos, &lightsMap[DEFAULT_LIGTH], "models/textures/ColorPalette.png");
         plants->setSize(Vec3(0.01,0.01,0.01));
 
+        Matrix spikes1, spikes2, spikes3, spikes4;
+        spikes1 = spikes1.setTranslation(Vec3(-1.5f, 14.0f, -1.3f)).mul(spikes1.setScaling(Vec3(0.5,0.3,1)));
+        spikes2 = spikes2.setTranslation(Vec3(1.5f, 14.0f, -1.3f)).mul(spikes2.setScaling(Vec3(0.5,0.3,1)));
+        spikes3 = spikes3.setTranslation(Vec3(-1.5f, 14.0f, -5.0f)).mul(spikes3.setScaling(Vec3(0.5,0.3,1)));
+        spikes4 = spikes4.setTranslation(Vec3(1.5f, 14.0f, -5.0f)).mul(spikes4.setScaling(Vec3(0.5,0.3,1)));
+        
+        std::vector<Matrix> spikesPos = {spikes1, spikes2, spikes3, spikes4};
+        
+        CubeTextured* spikes = new CubeTextured(sm, core, "models/spikes.gem");
+        spikes->init(core, spikesPos, &lightsMap[LIGHT_WHEEL], "models/textures/ColorPalette2.png");
+
         cubesTextured.push_back(pilar);
         cubesTextured.push_back(pilarBroken);
         cubesTextured.push_back(palmTree);
         cubesTextured.push_back(rails);
         cubesTextured.push_back(plants);
+        //cubesTextured.push_back(spikes);
     }
 
     void createWater() {
@@ -318,7 +337,8 @@ public:
     }
 
     void createCoins() {        
-        Matrix coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8;
+        Matrix coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, coin11, coin12;
+        Matrix coin13, coin14, coin15, coin16, coin17, coin18, coin19, coin20, coin21, coin22, coin23, coin24;
         coin1 = coin1.setTranslation(Vec3(8.0f, 6.5f, 7.5f)).mul(coin1.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin2 = coin2.setTranslation(Vec3(0, 14, -3)).mul(coin2.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin3 = coin3.setTranslation(Vec3(2, 14, -3)).mul(coin3.setScaling(Vec3(0.015, 0.015, 0.015)));
@@ -327,8 +347,29 @@ public:
         coin6 = coin6.setTranslation(Vec3(-6, 14, 8)).mul(coin6.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin7 = coin7.setTranslation(Vec3(-8, 14, 8)).mul(coin7.setScaling(Vec3(0.015, 0.015, 0.015)));
         coin8 = coin8.setTranslation(Vec3(-10, 14, 8)).mul(coin8.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin9 = coin9.setTranslation(Vec3(-10, 16, 10)).mul(coin9.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin10 = coin10.setTranslation(Vec3(-8, 16, 10)).mul(coin10.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin11 = coin11.setTranslation(Vec3(-6, 16, 10)).mul(coin11.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin12 = coin12.setTranslation(Vec3(-4, 16, 10)).mul(coin12.setScaling(Vec3(0.015, 0.015, 0.015)));
 
-        std::vector<Matrix> coinsPos = {coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8};
+        coin13 = coin13.setTranslation(Vec3(-7, 18, 12)).mul(coin13.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin14 = coin14.setTranslation(Vec3(-8, 18, 12)).mul(coin14.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin15 = coin15.setTranslation(Vec3(-6, 18, 12)).mul(coin15.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin16 = coin16.setTranslation(Vec3(-4, 18, 12)).mul(coin16.setScaling(Vec3(0.015, 0.015, 0.015)));
+
+        coin17 = coin17.setTranslation(Vec3(-10, 6, -8)).mul(coin17.setScaling(Vec3(0.015, 0.015, 0.015)));
+        
+        coin18 = coin18.setTranslation(Vec3(-8, 6, 10)).mul(coin18.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin19 = coin19.setTranslation(Vec3(-6, 6, 10)).mul(coin19.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin20 = coin20.setTranslation(Vec3(-4, 6, 10)).mul(coin20.setScaling(Vec3(0.015, 0.015, 0.015)));
+
+        coin21 = coin21.setTranslation(Vec3(-10, 4, 2)).mul(coin21.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin22 = coin22.setTranslation(Vec3(-10, 4, 4)).mul(coin22.setScaling(Vec3(0.015, 0.015, 0.015)));
+
+        coin23 = coin23.setTranslation(Vec3(-7, 10, -4)).mul(coin23.setScaling(Vec3(0.015, 0.015, 0.015)));
+        coin24 = coin24.setTranslation(Vec3(-7, 10, 2)).mul(coin24.setScaling(Vec3(0.015, 0.015, 0.015)));
+
+        std::vector<Matrix> coinsPos = {coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, coin11, coin12, coin13, coin17, coin20, coin21, coin22, coin23, coin24};
         for (Matrix pos : coinsPos) {
             std::vector<Matrix> unary = {pos};
             Coin* _coin = Coin::createCoins(sm, core, unary, &lightsMap[COIN_LIGHT]);

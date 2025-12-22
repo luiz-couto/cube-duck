@@ -84,7 +84,7 @@ public:
     }
 
     static Brick* createBrick(ShaderManager* sm, Core* core, std::vector<Matrix> worldPositions, BRDFLightCB *light) {
-        Brick* brick = new Brick(sm, core, "models/brick_2.gem");
+Brick* brick = new Brick(sm, core, "models/brick_2.gem");
         brick->init(core, worldPositions, light);
         return brick;
     }
