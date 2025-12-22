@@ -581,7 +581,7 @@ public:
         water->draw(core, camera, dt);
 
         if (isFirstFrame) {
-            MessageBoxA(NULL, "Level 1:\nCollect all the coins while avoiding enemies!\nUse WASD to move, SPACE to jump.\nMove the camera with the mouse click and drag and scroll to zoom.\nIf you're stuck, press R to reset and try again ;)", "Instructions", MB_OK | MB_ICONINFORMATION);
+            MessageBoxA(NULL, "Level 1:\nCollect all the coins while avoiding enemies!\nUse WASD to move, SPACE to jump.\nMove the camera with the mouse (click and drag) and scroll to zoom.\nIf you're stuck, press R to reset and try again ;)", "Instructions", MB_OK | MB_ICONINFORMATION);
             isFirstFrame = false;
         }
     }
