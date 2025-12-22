@@ -8,7 +8,7 @@ class PSOManager {
 public:
     std::unordered_map<std::string, ID3D12PipelineState*> psos;
 
-    void createPSO(Core* core, std::string name, ID3DBlob* vs, ID3DBlob* ps, D3D12_INPUT_LAYOUT_DESC layout) {
+    void createPSO(Core* core, std::string name, ID3DBlob* vs, ID3DBlob* ps, D3D12_INPUT_LAYOUT_DESC layout, bool enableTransparency = false) {
         if (psos.find(name) != psos.end()) {
             return; // PSO already exists
         }
@@ -37,22 +37,28 @@ public:
         D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
         depthStencilDesc.DepthEnable = TRUE;
         depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+        if (enableTransparency) {
+            depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+        }
         depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
         depthStencilDesc.StencilEnable = FALSE;
         desc.DepthStencilState = depthStencilDesc;
 
+        // Enable alpha
         D3D12_BLEND_DESC blendDesc = {};
         blendDesc.AlphaToCoverageEnable = FALSE;
         blendDesc.IndependentBlendEnable = FALSE;
-        const D3D12_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlend = {
-            FALSE, FALSE,
-            D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
-            D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
-            D3D12_LOGIC_OP_NOOP,
-            D3D12_COLOR_WRITE_ENABLE_ALL
-        };
+        D3D12_RENDER_TARGET_BLEND_DESC blendRenderTarget = {};
+        blendRenderTarget.BlendEnable = TRUE;
+        blendRenderTarget.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+        blendRenderTarget.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+        blendRenderTarget.BlendOp = D3D12_BLEND_OP_ADD;
+        blendRenderTarget.SrcBlendAlpha = D3D12_BLEND_ONE;
+        blendRenderTarget.DestBlendAlpha = D3D12_BLEND_ZERO;
+        blendRenderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+        blendRenderTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
         for (int i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; i++) {
-            blendDesc.RenderTarget[i] = defaultRenderTargetBlend;
+            blendDesc.RenderTarget[i] = blendRenderTarget;
         }
         desc.BlendState = blendDesc;
 

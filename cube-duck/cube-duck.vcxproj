@@ -105,7 +105,7 @@
       <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -133,25 +133,35 @@
     <ClInclude Include="AnimatedModel.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Barrier.h" />
+    <ClInclude Include="Brick.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="ConstantBufferReflection.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="CubeTextured.h" />
     <ClInclude Include="Duck.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fence.h" />
     <ClInclude Include="GamesEngineeringBase.h" />
     <ClInclude Include="GEMAnimatedObject.h" />
     <ClInclude Include="GEMLoader.h" />
     <ClInclude Include="GEMObject.h" />
     <ClInclude Include="Grass.h" />
+    <ClInclude Include="GrassLight.h" />
+    <ClInclude Include="Level1.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="PSOManager.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SkyDome.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Water.h" />
+    <ClInclude Include="Wheel.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

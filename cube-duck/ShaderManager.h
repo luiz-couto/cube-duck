@@ -91,6 +91,19 @@ public:
         core->getCommandList()->SetGraphicsRootDescriptorTable(2, handle);
     }
 
+    void updateTexturesPSWithNormalMap(Core* core, std::string diffuseName, int diffuseOffset, std::string normalName, int normalOffset) {
+        UINT bindPoint0 = textureBindPoints[diffuseName];
+        UINT bindPoint1 = textureBindPoints[normalName];
+
+        D3D12_GPU_DESCRIPTOR_HANDLE handle = core->srvHeap.gpuHandle;
+        handle.ptr = handle.ptr + (UINT64)(diffuseOffset - bindPoint0) * (UINT64)core->srvHeap.incrementSize;
+        core->getCommandList()->SetGraphicsRootDescriptorTable(2, handle);
+
+        handle = core->srvHeap.gpuHandle;
+        handle.ptr = handle.ptr + (UINT64)(normalOffset - bindPoint1) * (UINT64)core->srvHeap.incrementSize;
+        core->getCommandList()->SetGraphicsRootDescriptorTable(3, handle);
+    }
+
     template <typename T>
     Shader* getShader(std::string filename, ShaderKind kind, T* cpuConstantBufferStruct) {
         auto it = shaders.find(filename);

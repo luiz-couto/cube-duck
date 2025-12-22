@@ -16,22 +16,51 @@
 #define CAMERA_MAX_X 10.0f
 #define CAMERA_MIN_X -10.0f
 
-#define MIN_ZOOM_Y 5.0f
-#define MAX_ZOOM_Y 40.0f
+#define MIN_ZOOM_Y 18.0f
+#define MAX_ZOOM_Y 55.0f
+
+#define MIN_ANGLE_Z 0.6
+#define MAX_ANGLE_Z 1.3
 
 class Camera {
     public:
+    Vec3 startFrom;
+
     Vec3 from;
     Vec3 to;
     Vec3 up;
 
-    Camera() : from(8.0f, 6.5f, 8.0f), to(0, 1, 0), up(0, 1, 0) {}
-    Camera(Vec3 from, Vec3 to, Vec3 up) : from(from), to(to), up(up) {}
+    float angleY = 0.0f;
+    float angleZ = 0.0f;
+    float distance = 0.0f;
+
+    Camera() : from(20.5f, 28.5f, 5.96f), to(-1.2, 5, -0.64), up(0, 1, 0) {
+        init();
+    }
+    Camera(Vec3 from, Vec3 to, Vec3 up) : from(from), to(to), up(up) {
+        init();
+    }
 
     void moveCameraY(float value) {
         float newY = to.y + value;
         if (newY < CAMERA_MIN_Y || newY > CAMERA_MAX_Y) return;
         to = Vec3(to.x, newY, to.z);
+    }
+
+    void init() {
+        Vec3 offset = from - to;
+        distance = sqrt(offset.x * offset.x + offset.y * offset.y + offset.z * offset.z);
+        angleY = atan2(offset.z, offset.x);
+        angleZ = acos(offset.y / distance);
+    }
+
+    void recalculateFrom() {
+        Vec3 offset;
+        offset.x = distance * sin(angleZ) * cos(angleY);
+        offset.y = distance * cos(angleZ);
+        offset.z = distance * sin(angleZ) * sin(angleY);
+
+        from = to + offset;
     }
 
     void moveCameraX(float value) {
@@ -48,36 +77,42 @@ class Camera {
         to = Vec3(to.x + toDeltaX, newTo.y, to.z + toDeltaZ);
     }
 
-    void rotate(float angle) {
-        Vec3 offset = from - to;
-        
-        float cosA = cosf(angle);
-        float sinA = sinf(angle);
-        float newX = offset.x * cosA - offset.z * sinA;
-        float newZ = offset.x * sinA + offset.z * cosA;
+    void rotateY(float angle) {
+        angleY += angle * 0.5;
+        recalculateFrom();
+    }
 
-        from = Vec3(newX + to.x, from.y, newZ + to.z);
+    void rotateZ(float angle) {
+        float newAngle = angleZ - (angle * 0.5);
+        if (newAngle < MIN_ANGLE_Z || newAngle > MAX_ANGLE_Z) {
+            return;
+        }
+        angleZ = newAngle;
+        recalculateFrom();
     }
 
     void zoom(float delta) {
-        Vec3 direction = to - from;
-        float distance = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-
-        if (distance > 0.1f) {
-            direction.x /= distance;
-            direction.y /= distance;
-            direction.z /= distance;
-
-            float newDistance = distance + delta;
-            Vec3 newFrom = Vec3(from.x + direction.x * delta, from.y + direction.y * delta, from.z + direction.z * delta);
-            
-            if (newFrom.y < MIN_ZOOM_Y || newFrom.y > MAX_ZOOM_Y ) return;
-            from = newFrom;
-        }
+        float newDistance = distance + delta;
+        if (newDistance < MIN_ZOOM_Y || newDistance > MAX_ZOOM_Y) return;
+        
+        distance = newDistance;
+        recalculateFrom();
     }
 
     void resetCamera() {
-        from = Vec3(8.0f, 6.5f, 8.0f);
-        to = Vec3(0, 1, 0);
+        from = Vec3(20.5f, 28.5f, 5.96f);
+        to = Vec3(-1.2, 5, -0.64);
+        init();
+    }
+
+    Vec3 getForwardVector() {
+        Vec3 forward = (to - from).normalize();
+        return forward;
+    }
+
+    Vec3 getRightVector() {
+        Vec3 forward = getForwardVector();
+        Vec3 right = (forward.cross(up)).normalize();
+        return right;
     }
 };

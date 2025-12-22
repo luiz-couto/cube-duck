@@ -15,10 +15,13 @@ public:
     VertexLayoutCache vertexLayoutCache;
     std::string filename;
     VertexDefaultShaderCB* vertexShaderCB;
+    Vec3 size;
+    std::vector<Matrix> worldPositions;
 
-    GEMObject(ShaderManager* sm, Core* core, const std::string& filename) : shaderManager(sm), staticMesh(core), filename(filename) {}
+    GEMObject(ShaderManager* sm, Core* core, const std::string& filename, Vec3 _size = Vec3(2,2,2)) : shaderManager(sm), staticMesh(core), filename(filename), size(_size)  {}
 
-    void init(Core* core, std::vector<Matrix> worldPositions, VertexDefaultShaderCB* vertexShader = nullptr) {
+    void init(Core* core, std::vector<Matrix> _worldPositions, VertexDefaultShaderCB* vertexShader = nullptr) {
+        worldPositions = _worldPositions;
         if (vertexShader == nullptr) {
             vertexShader = new VertexDefaultShaderCB();
             vertexShader->W.setIdentity();
@@ -54,6 +57,10 @@ public:
 
     void rotateY(float angle) {
         vertexShaderCB->W.setRotationY(angle);
+    }
+    
+    void setSize(Vec3 newSize) {
+        size = newSize;
     }
 
     void updateConstantsVertexShader(Core* core) {
